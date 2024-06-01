@@ -16,6 +16,8 @@ path.quadTo(356, 331, 347, 312)
 path.quadTo(338, 292, 320, 280) # <- comment out this line and shape will draw correctly with anti-aliasing
 path.close()
 
+print(glfw._glfw)
+
 if not glfw.init():
     raise RuntimeError('glfw.init() failed')
 glfw.window_hint(glfw.STENCIL_BITS, 8)
