@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run tests
         run: |
-          python -m pip install pyopengl glfw sdl2
+          python -m pip install pyopengl glfw pysdl2
           python -m pip install --pre skia-python
           python issue-214-glfw.py
           python issue-214-glut.py
