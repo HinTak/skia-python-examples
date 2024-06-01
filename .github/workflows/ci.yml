@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    name: tests on ${{ matrix.os }} (${{ matrix.arch }}) for ${{ matrix.cp }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        arch: [auto64]
+        cp: ["cp312"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          python -m pip install pyopengl glfw sdl2
+          python -m pip install --pre skia-python
+          python issue-214-glfw.py
+          python issue-214-glut.py
+          python issue-214-sdl2.py
