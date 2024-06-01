@@ -138,7 +138,7 @@ def main(argv):
         colorType = kRGBA_8888_ColorType
     else:
         colorType = kBGRA_8888_ColorType
-        if SDL_GL_CONTEXT_PROFILE_ES == contextType:
+        if SDL_GL_CONTEXT_PROFILE_ES == contextType.value:
             fFormat = GL_BGRA8_EXT
         else:
             fFormat = GL_RGBA8
