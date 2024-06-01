@@ -18,6 +18,8 @@ path.close()
 
 print(glfw._glfw)
 
+glfw.init_hint(glfw.COCOA_MENUBAR, glfw.FALSE)
+
 if not glfw.init():
     raise RuntimeError('glfw.init() failed')
 glfw.window_hint(glfw.STENCIL_BITS, 8)
