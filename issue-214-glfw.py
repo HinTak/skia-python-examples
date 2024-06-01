@@ -29,13 +29,13 @@ glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 window = glfw.create_window(640, 480, '', None, None)
 glfw.make_context_current(window)
 
-context = skia.GrDirectContext.MakeGL()
-assert context is not None
-
 print(glGetString(GL_VENDOR))
 print(glGetString(GL_RENDERER))
 print(glGetString(GL_VERSION))
 print(glGetString(GL_SHADING_LANGUAGE_VERSION))
+
+context = skia.GrDirectContext.MakeGL()
+assert context is not None
 
 (fb_width, fb_height) = glfw.get_framebuffer_size(window)
 backend_render_target = skia.GrBackendRenderTarget(
