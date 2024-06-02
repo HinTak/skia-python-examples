@@ -1,5 +1,6 @@
 import skia
 import glfw
+import os
 
 from OpenGL.GL import glGetString, GL_VENDOR, GL_RENDERER, GL_VERSION, GL_SHADING_LANGUAGE_VERSION, \
     glClear, GL_COLOR_BUFFER_BIT, \
@@ -18,7 +19,13 @@ path.close()
 
 print(glfw._glfw)
 
-glfw.init_hint(glfw.COCOA_MENUBAR, glfw.FALSE)
+is_headless = False
+if "CI" in os.environ or "GITHUB_RUN_ID" in os.environ:
+    is_headless = True
+    print("Headless mode")
+
+if is_headless:
+    glfw.init_hint(glfw.COCOA_MENUBAR, glfw.FALSE)
 
 if not glfw.init():
     raise RuntimeError('glfw.init() failed')
@@ -29,7 +36,8 @@ glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
 glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, True)
 glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 #
-glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
+if is_headless:
+    glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
 window = glfw.create_window(640, 480, '', None, None)
 glfw.make_context_current(window)
 
