@@ -53,7 +53,7 @@ As soon as the tube was disconnected, the ship screamed off through the murky at
 
     if not face:
         print("input font %s was not parsable by Freetype" % (argv[1]))
-        sys.exit(1)
+        exit(1)
 
     fontCollection = textlayout.FontCollection()
     fontCollection.setDefaultFontManager(mgr)
