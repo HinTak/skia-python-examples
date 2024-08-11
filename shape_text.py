@@ -6,6 +6,27 @@
 #
 #  Based on Google's own C++ example, chrome/m128:example/external_client/src/shape_text.cpp
 
+#  Known current limitation:
+#
+#  - The first argument is ignored - you can achieve a similar effect by a combination of
+#    "TextStyle.setFontFamilies()" and "TextStyle.setFontStyle()".
+#
+#    For example, on Linux,
+#    /usr/share/fonts/liberation-serif/LiberationSerif-Regular.ttf as argv[1]
+#    is equivalent to 'style.setFontFamilies(["Liberation Serif"])' alone,
+#    while /usr/share/fonts/liberation-serif/LiberationSerif-Bold.ttf as argv[1]
+#    is equivalent to 'style.setFontFamilies(["Liberation Serif"])' plus
+#    'style.setFontStyle(FontStyle.Bold())', commented out below.
+#
+#    The C++ example creates a custom font manager with argv[1] ( with
+#    FontMgr.New_Custom_Empty(), commented out below) which knows about exact
+#    one font file. I haven't figured out the equivalent in Python yet.
+#
+#  - There is a small upstream bug in the c++ example, about the
+#    output file type/extension being inconsistent:
+#    https://issues.skia.org/358798723 - we are not copying the bug.
+#    I prefer png.
+
 from skia import *
 
 if __name__ == '__main__':
