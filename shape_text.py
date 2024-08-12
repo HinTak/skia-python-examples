@@ -22,7 +22,7 @@
 #    'style.setFontStyle(FontStyle.Bold())', with "mgr = FontMgr()", commented out below.
 #
 #    The C++ example creates a custom font manager "OneFontMgr" with argv[1]
-#    which knows about exact one font file. We moved that snipplet into skia-python.
+#    which knows about exact one font file. We moved that c++ snipplet into skia-python m129+.
 #
 #  - There is a small upstream bug in the c++ example, about the
 #    output file type/extension being inconsistent:
