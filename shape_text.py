@@ -6,21 +6,23 @@
 #
 #  Based on Google's own C++ example, chrome/m128:example/external_client/src/shape_text.cpp
 
-#  Known current limitation:
+#  Notes:
 #
-#  - The first argument is ignored - you can achieve a similar effect by a combination of
+#  - The first argument is processed by "FontMgr.OneFontMgr(input)",
+#    a font manager which knows only one specific font.
+#    You can achieve a similar effect with the platform font manager
+#    ("FontMgr()") by a combination of
 #    "TextStyle.setFontFamilies()" and "TextStyle.setFontStyle()".
 #
 #    For example, on Linux,
 #    /usr/share/fonts/liberation-serif/LiberationSerif-Regular.ttf as argv[1]
-#    is equivalent to 'style.setFontFamilies(["Liberation Serif"])' alone,
+#    is equivalent to 'style.setFontFamilies(["Liberation Serif"])' with "mgr = FontMgr()",
 #    while /usr/share/fonts/liberation-serif/LiberationSerif-Bold.ttf as argv[1]
 #    is equivalent to 'style.setFontFamilies(["Liberation Serif"])' plus
-#    'style.setFontStyle(FontStyle.Bold())', commented out below.
+#    'style.setFontStyle(FontStyle.Bold())', with "mgr = FontMgr()", commented out below.
 #
-#    The C++ example creates a custom font manager with argv[1] ( with
-#    FontMgr.New_Custom_Empty(), commented out below) which knows about exact
-#    one font file. I haven't figured out the equivalent in Python yet.
+#    The C++ example creates a custom font manager "OneFontMgr" with argv[1]
+#    which knows about exact one font file. We moved that snipplet into skia-python.
 #
 #  - There is a small upstream bug in the c++ example, about the
 #    output file type/extension being inconsistent:
@@ -46,15 +48,8 @@ The ship settled down on the scarred blast shield, beside the same trio of squat
 As soon as the tube was disconnected, the ship screamed off through the murky atmosphere, seemingly glad to get away from Titan and head back to the more comfortable and settled parts of the Solar System.
 '''
 
-    font_data = Data.MakeFromFileName(input)
-    mgr = FontMgr()
-    # mgr = FontMgr.New_Custom_Empty()
-    face = mgr.makeFromData(font_data)
-
-    if not face:
-        print("input font %s was not parsable by Freetype" % (argv[1]))
-        exit(1)
-
+    # mgr = FontMgr()
+    mgr = FontMgr.OneFontMgr(input)
     fontCollection = textlayout.FontCollection()
     fontCollection.setDefaultFontManager(mgr)
 
