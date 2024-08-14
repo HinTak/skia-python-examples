@@ -24,6 +24,14 @@
 #    The C++ example creates a custom font manager "OneFontMgr" with argv[1]
 #    which knows about exact one font file. We moved that c++ snipplet into skia-python m129+.
 #
+#    The two approaches have different strengths: The OnefontMgr is useful for
+#    pixel-perfect agreement across platforms, especially for embedded (mobile/secure)
+#    systems without platform fonts. The platform font manager offers a wider typeface and
+#    style choices.
+#
+#  - This python example offers style.setDecoration* for setting underline/overline/strikthrough
+#    decoration styles. This was not in the c++ example.
+#
 #  - There is a small upstream bug in the c++ example, about the
 #    output file type/extension being inconsistent:
 #    https://issues.skia.org/358798723 - we are not copying the bug.
