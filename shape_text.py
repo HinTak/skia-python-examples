@@ -85,6 +85,7 @@ As soon as the tube was disconnected, the ship screamed off through the murky at
     style.setFontSize(10.5)
     paraStyle = textlayout.ParagraphStyle()
     paraStyle.setTextStyle(style)
+    # available alternatives to kRight are: kLeft, kRight, kCenter, kJustify, kStart, kEnd
     paraStyle.setTextAlign(textlayout.TextAlign.kRight)
 
     # "unicode" is reserved in Python
