@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     style_underline = style.cloneForPlaceholder()
     style_underline.setDecoration(textlayout.TextDecoration.kUnderline)
-    style_underline.setDecorationMode(textlayout.TextDecorationMode.kGaps) # Rust seems to default to kThrough
+    style_underline.setDecorationMode(textlayout.TextDecorationMode.kGaps) # Rust seems to default to kGaps, while kThrough is the upstream default.
     style_underline.setDecorationColor(ColorBLACK)
     style_underline.setDecorationThicknessMultiplier(1.5)
     builder.pushStyle(style_underline)
