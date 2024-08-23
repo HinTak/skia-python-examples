@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  Copyright 2024 Hin-Tak Leung
+#  Distributed under the terms of the new BSD license.
+#
+#  Based on MeetWq's rust-skia example, https://gist.github.com/MeetWq/c56635fbf886c2c511c2ac1ec8e0aa48
+#  (See https://github.com/kyamagu/skia-python/pull/258#issuecomment-2304137435)
+
+#  Note:
+#      On Linux, this code depends on fontconfig, and is highly sensitive to LANG and FC_LANG.
+#      You may want to set LANG to "en_GB.UTF-8" or "en_US.UTF-8", and FC_LANG to "en",
+#      if you have a non-English locale, particularly a zh_* one.
+
 from skia import Surfaces, ImageInfo, AlphaType
 from skia import textlayout
 from skia import ColorBLACK, ColorWHITE, FontMgr, FontStyle, Paint, Point, Unicodes, kPNG
