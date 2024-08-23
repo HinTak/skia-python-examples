@@ -14,7 +14,7 @@
 
 from skia import Surfaces, ImageInfo, AlphaType
 from skia import textlayout
-from skia import ColorBLACK, ColorWHITE, FontMgr, FontStyle, Paint, Point, Unicodes, kPNG
+from skia import ColorBLACK, ColorWHITE, FontMgr, FontStyle, Paint, Unicodes, kPNG
 
 from math import ceil
 
