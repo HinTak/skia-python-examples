@@ -15,4 +15,6 @@ jobs:
           # 3.x is whatever latest.
           python-version: '3.x'
       - run: python -m pip install --pre skia-python
+      - run: python -c 'import sys; print(sys.path)'
+      - run: python -c 'import site; print(site.getsitepackages())'
       - run: python skparagraph-example.py
