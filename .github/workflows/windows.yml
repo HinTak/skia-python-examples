@@ -17,6 +17,7 @@ jobs:
       - run: python -m pip install --pre skia-python
       - run: python -c 'import sys; print(sys.path)'
       - run: python -c 'import site; print(site.getsitepackages())'
+      # download, unpack and copy with renaming "icudtl.dat" to the right place
       - run: python -c 'import urllib.request; urllib.request.urlretrieve("https://github.com/unicode-org/icu/releases/download/release-75-1/icu4c-75_1-data-bin-l.zip", "icudatal.zip")'
       - run: unzip icudatal.zip
       - run: python -c 'import os, shutil, site; shutil.copy2("icudt75l.dat", os.path.join(site.getsitepackages()[0], "icudtl.dat"))'
