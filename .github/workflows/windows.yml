@@ -17,7 +17,7 @@ jobs:
       - run: python -m pip install --pre skia-python
       - run: python -c 'import sys; print(sys.path)'
       - run: python -c 'import site; print(site.getsitepackages())'
-      - run: python -c 'r = requests.get("https://github.com/unicode-org/icu/releases/download/release-75-1/icu4c-75_1-data-bin-l.zip", allow_redirects=True); open("icudatal.zip", "wb").write(r.content)'
+      - run: python -c 'import requests; r = requests.get("https://github.com/unicode-org/icu/releases/download/release-75-1/icu4c-75_1-data-bin-l.zip", allow_redirects=True); open("icudatal.zip", "wb").write(r.content)'
       - run: unzip icudatal.zip
       - run: python -c 'import shutil, site; shutil.copy2("icudtl.dat", site.getsitepackages()[0])'
       - run: python skparagraph-example.py
