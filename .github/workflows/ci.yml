@@ -11,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
-        arch: [arm64]
+        os: [macos-13]
+        arch: [auto64]
         cp: ["cp312"]
     env:
       PYGLFW_LIBRARY: glfw-3.4.bin.MACOS/lib-universal/libglfw.3.dylib
