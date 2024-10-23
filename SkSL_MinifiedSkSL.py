@@ -16,6 +16,10 @@ SKSL_MINIFIED_GradientShader = \
 def draw(canvas):
     # "auto" is not reserved in Python. This is just a variable for the struct result.
     auto = RuntimeEffect.MakeForShader(SKSL_MINIFIED_GradientShader)
+
+    if (auto.effect is None):
+        raise RuntimeError(auto.errorText)
+
     myShader = auto.effect.makeShader(None)
 
     canvas.drawColor(ColorGRAY)
