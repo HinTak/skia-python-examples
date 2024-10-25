@@ -12,3 +12,26 @@ Note on Linux, it is highly sensitive to locale, and you might need to unset `LA
 (non-English) settings.
 
 ![test-en](https://github.com/user-attachments/assets/9ff6dff5-a684-46e9-9a30-cd91455845cb)
+
+## SkSL examples
+
+original:
+
+![original](resources/images/example_5.png)
+
+`SkSL_CoordinateSpaces.py`:
+
+![CoordinateSpaces](SkSL_example_outputs/CoordinateSpaces.png)
+
+`SkSL_EvaluatingImageShader.py` (swap red and blue):
+
+![EvaluatingImageShader](SkSL_example_outputs/EvaluatingImageShader.png)
+
+`SkSL_MinifiedSkSL.py`: (this is not a separate SkSL example, but how to generate Minified SkSL with Skia's `minifier` tool
+for the same result as `SkSL_PremultipliedAlpha.py` below):
+
+![MinifiedSkSL](SkSL_example_outputs/MinifiedSkSL.png)
+
+`SkSL_PremultipliedAlpha.py`:
+
+![PremultipliedAlpha](SkSL_example_outputs/PremultipliedAlpha.png)
