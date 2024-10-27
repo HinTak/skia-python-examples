@@ -38,7 +38,7 @@ def draw(canvas):
     if (autoResult.effect is None):
         raise RuntimeError(autoResult.errorText)
 
-    myShader = autoResult.effect.makeShader(None, SpanRuntimeEffectChildPtr(children))
+    myShader = autoResult.effect.makeShader(None, children)
 
     canvas.drawColor(ColorGRAY)
     
