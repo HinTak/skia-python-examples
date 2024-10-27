@@ -27,6 +27,10 @@ original:
 
 ![EvaluatingImageShader](SkSL_example_outputs/EvaluatingImageShader.png)
 
+`SkSL_EvaluatingTwoShaders.py` (Image with Gradient):
+
+![EvaluatingTwoShaders](SkSL_example_outputs/EvaluatingTwoShaders.png)
+
 `SkSL_MinifiedSkSL.py`: (this is not a separate SkSL example, but how to generate Minified SkSL with Skia's `minifier` tool
 for the same result as `SkSL_PremultipliedAlpha.py` below):
 
