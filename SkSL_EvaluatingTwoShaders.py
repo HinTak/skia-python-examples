@@ -31,7 +31,7 @@ def draw(canvas):
 
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 
-    children = VectorSkRuntimeEffectChildPtr([RuntimeEffectChildPtr(imageShader), RuntimeEffectChildPtr(makeGradientShader())])
+    children = VectorSkRuntimeEffectChildPtr([imageShader, makeGradientShader()])
 
     autoResult = RuntimeEffect.MakeForShader(sksl)
 
