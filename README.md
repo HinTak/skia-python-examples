@@ -43,3 +43,7 @@ for the same result as `SkSL_PremultipliedAlpha.py` below):
 `SkSL_PremultipliedAlpha.py`:
 
 ![PremultipliedAlpha](SkSL_example_outputs/PremultipliedAlpha.png)
+
+`SkSL_LinearSRGB.py`:
+
+![LinearSRGB](SkSL_example_outputs/LinearSRGB.png)
