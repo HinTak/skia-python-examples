@@ -51,3 +51,7 @@ for the same result as `SkSL_PremultipliedAlpha.py` below):
 `SkSL_Uniforms.py`:
 
 ![Uniforms](SkSL_example_outputs/Uniforms.png)
+
+`SkSL_RawImageShaders.py`:
+
+![RawImageShaders](SkSL_example_outputs/RawImageShaders.png)
