@@ -61,10 +61,11 @@ def draw(canvas):
     canvas.drawImage(surface.makeImageSnapshot(), 256, 0)
     
 if __name__ == '__main__':
+    import os, sys
     from skia import Surface, kPNG
     surface = Surface(384, 128)
     with surface as canvas:
         draw(canvas)
     surface.flushAndSubmit()
     image = surface.makeImageSnapshot()
-    image.save('./output.png', kPNG)
+    image.save(os.path.splitext(os.path.basename(sys.argv[0]))[0].split('_')[-1] + '.png', kPNG)
