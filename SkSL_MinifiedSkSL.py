@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_MinifiedSkSL.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, Paint, ColorGRAY
 
@@ -15,12 +14,9 @@ half4 main(float2 a){float b=1.-a.y*.006666667;if(a.x<100.)return half4(float4
 (0.,.5,.75,1.)*b);else return half4(half3(0.,.5,.75),half(b));}"""
 
 def draw(canvas):
-    autoResult = RuntimeEffect.MakeForShader(SKSL_MINIFIED_GradientShader)
+    effect = RuntimeEffect.MakeForShader(SKSL_MINIFIED_GradientShader)
 
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
-
-    myShader = autoResult.effect.makeShader(None)
+    myShader = effect.makeShader(None)
 
     canvas.drawColor(ColorGRAY)
 

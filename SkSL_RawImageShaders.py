@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_RawImageShaders.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, RuntimeShaderBuilder, Paint, Rect, ColorSpace, cms, ImageInfo, kRGBA_F16_ColorType, kPremul_AlphaType, Surfaces, BlendMode, SamplingOptions
 
@@ -30,7 +29,7 @@ def draw(canvas):
       float len2 = dot(p, p);
       vec3 v = (len2 > 1) ? vec3(0, 0, 1) : vec3(p, sqrt(1 - len2));
       return (v * 0.5 + 0.5).xyz1;
-    }""").effect
+    }""")
     normalImage = make_image(imageShader, imageInfo)
 
     litEffect = RuntimeEffect.MakeForShader("""
@@ -39,7 +38,7 @@ def draw(canvas):
       vec3 n = normalize(normals.eval(p).xyz * 2 - 1);
       vec3 l = normalize(vec3(-1, -1, 0.5));
       return saturate(dot(n, l)).xxx1;
-    }""").effect
+    }""")
     builder = RuntimeShaderBuilder(litEffect)
     
     paint = Paint()

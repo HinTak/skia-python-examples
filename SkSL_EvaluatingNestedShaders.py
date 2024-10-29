@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_EvaluatingNestedShaders.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, Paint, ColorGRAY, \
     Image, SamplingOptions, FilterMode, RuntimeEffectChildPtr, SpanRuntimeEffectChildPtr
@@ -21,8 +20,8 @@ def makeGradientShader():
       half4 black = half4(0,0,0,1);
       return mix(white, black, t);
     }"""
-    autoResult = RuntimeEffect.MakeForShader(sksl)
-    return autoResult.effect.makeShader(None)
+    effect = RuntimeEffect.MakeForShader(sksl)
+    return effect.makeShader(None)
 
 image = Image.open("resources/images/example_5.png")
 
@@ -38,12 +37,9 @@ def draw(canvas):
 
     children = VectorSkRuntimeEffectChildPtr([imageShader, makeGradientShader()])
 
-    autoResult = RuntimeEffect.MakeForShader(sksl)
+    effect = RuntimeEffect.MakeForShader(sksl)
 
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
-
-    myShader = autoResult.effect.makeShader(None, children)
+    myShader = effect.makeShader(None, children)
 
     canvas.drawColor(ColorGRAY)
     

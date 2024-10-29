@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_EvaluatingTwoShaders.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, Paint, ColorGRAY, \
     Image, SamplingOptions, FilterMode, RuntimeEffectChildPtr, SpanRuntimeEffectChildPtr
@@ -33,12 +32,9 @@ def draw(canvas):
 
     children = VectorSkRuntimeEffectChildPtr([imageShader, makeGradientShader()])
 
-    autoResult = RuntimeEffect.MakeForShader(sksl)
+    effect = RuntimeEffect.MakeForShader(sksl)
 
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
-
-    myShader = autoResult.effect.makeShader(None, children)
+    myShader = effect.makeShader(None, children)
 
     canvas.drawColor(ColorGRAY)
     

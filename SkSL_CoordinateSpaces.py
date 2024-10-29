@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_CoordinateSpaces.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, Paint, ColorGRAY, \
     Image, SamplingOptions, FilterMode, RuntimeEffectChildPtr, SpanRuntimeEffectChildPtr
@@ -23,13 +22,10 @@ def draw(canvas):
 
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 
-    autoResult = RuntimeEffect.MakeForShader(sksl)
-
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
+    effect = RuntimeEffect.MakeForShader(sksl)
 
     children = RuntimeEffectChildPtr(imageShader)
-    myShader = autoResult.effect.makeShader(None, SpanRuntimeEffectChildPtr(children, 1))
+    myShader = effect.makeShader(None, SpanRuntimeEffectChildPtr(children, 1))
 
     canvas.drawColor(ColorGRAY)
     

@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_PremultipliedAlpha.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, Paint, ColorGRAY
 
@@ -24,12 +23,9 @@ sksl = """
   }"""
 
 def draw(canvas):
-    autoResult = RuntimeEffect.MakeForShader(sksl)
+    effect = RuntimeEffect.MakeForShader(sksl)
 
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
-
-    myShader = autoResult.effect.makeShader(None)
+    myShader = effect.makeShader(None)
 
     canvas.drawColor(ColorGRAY)
 

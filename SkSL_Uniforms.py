@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_Uniforms.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, RuntimeShaderBuilder, Paint, Rect, V4, ColorSpace, cms, ImageInfo, kRGBA_F16_ColorType, kPremul_AlphaType, Surfaces
 
@@ -23,11 +22,9 @@ def draw(canvas):
       return (c * (xy.x / 128)).rgb1;
     }"""
     
-    autoResult = RuntimeEffect.MakeForShader(sksl)
-    if (autoResult.effect is None):
-        raise RuntimeError(autoResult.errorText)
+    effect = RuntimeEffect.MakeForShader(sksl)
 
-    builder = RuntimeShaderBuilder(autoResult.effect)
+    builder = RuntimeShaderBuilder(effect)
     builder.setUniform("not_a_color", V4( 1, 0, 0, 1 ))
     builder.setUniform("color"      , V4( 1, 0, 0, 1 ))
 

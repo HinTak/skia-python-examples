@@ -6,7 +6,6 @@
 #
 
 # Based on chrome/m131:docs/examples/SkSL_LinearSRGB.cpp
-#     - We check effect being non-NULL here, unlike the c++ example.
 
 from skia import RuntimeEffect, RuntimeShaderBuilder, Paint, Rect, V3
 
@@ -34,9 +33,7 @@ def draw(canvas):
       return C.rgb1;
       }
 """)
-    if (litEffect.effect is None):
-        raise RuntimeError(litEffect.errorText)
-    builder = RuntimeShaderBuilder(litEffect.effect)
+    builder = RuntimeShaderBuilder(litEffect)
     builder.setUniform("surfaceColor", V3(0.8, 0.8, 0.8))
     paint = Paint()
     
