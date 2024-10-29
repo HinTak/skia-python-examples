@@ -10,18 +10,18 @@
 
 from skia import RuntimeEffect, Paint, ColorGRAY
 
-sksl = \
-  "const half3 iColor = half3(0, 0.5, 0.75);"                 + \
-  "half4 main(float2 coord) {"                                + \
-  "  float alpha = 1 - (coord.y / 150);"                      + \
-  "  if (coord.x < 100) {"                                    + \
-  "    /* Correctly premultiplied version of color */"        + \
-  "    return iColor.rgb1 * alpha;"                           + \
-  "  } else {"                                                + \
-  "    /* Returning an unpremultiplied color (just setting alpha) leads to over-bright colors. */" + \
-  "    return half4(iColor, alpha);"                          + \
-  "  }"                                                       + \
-  "}"
+sksl = """
+  const half3 iColor = half3(0, 0.5, 0.75);
+  half4 main(float2 coord) {
+    float alpha = 1 - (coord.y / 150);
+    if (coord.x < 100) {
+      /* Correctly premultiplied version of color */
+      return iColor.rgb1 * alpha;
+    } else {
+      /* Returning an unpremultiplied color (just setting alpha) leads to over-bright colors. */
+      return half4(iColor, alpha);
+    }
+  }"""
 
 def draw(canvas):
     autoResult = RuntimeEffect.MakeForShader(sksl)

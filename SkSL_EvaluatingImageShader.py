@@ -16,11 +16,11 @@ image = Image.open("resources/images/example_5.png")
 def draw(canvas):
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 
-    sksl = \
-    "uniform shader image;" + \
-    "half4 main(float2 coord) {" + \
-    "  return image.eval(coord).bgra;" + \
-    "}"
+    sksl = """
+    uniform shader image;
+    half4 main(float2 coord) {
+      return image.eval(coord).bgra;
+    }"""
    
     autoResult = RuntimeEffect.MakeForShader(sksl)
 

@@ -14,12 +14,12 @@ from skia import RuntimeEffect, Paint, ColorGRAY, \
 image = Image.open("resources/images/example_5.png")
 
 def draw(canvas):
-    sksl = \
-    "uniform shader image;" + \
-    "half4 main(float2 coord) {" + \
-    "  coord.x += sin(coord.y / 3) * 4;" + \
-    "  return image.eval(coord);" + \
-    "}"
+    sksl = """
+    uniform shader image;
+    half4 main(float2 coord) {
+      coord.x += sin(coord.y / 3) * 4;
+      return image.eval(coord);
+    }"""
 
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 

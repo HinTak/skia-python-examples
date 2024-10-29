@@ -10,9 +10,9 @@
 
 from skia import RuntimeEffect, Paint, ColorGRAY
 
-SKSL_MINIFIED_GradientShader = \
-"half4 main(float2 a){float b=1.-a.y*.006666667;if(a.x<100.)return half4(float4" + \
-"(0.,.5,.75,1.)*b);else return half4(half3(0.,.5,.75),half(b));}"
+SKSL_MINIFIED_GradientShader = """
+half4 main(float2 a){float b=1.-a.y*.006666667;if(a.x<100.)return half4(float4
+(0.,.5,.75,1.)*b);else return half4(half3(0.,.5,.75),half(b));}"""
 
 def draw(canvas):
     autoResult = RuntimeEffect.MakeForShader(SKSL_MINIFIED_GradientShader)

@@ -14,13 +14,13 @@ from skia import RuntimeEffect, Paint, ColorGRAY, \
 from skia import VectorSkRuntimeEffectChildPtr
 
 def makeGradientShader():
-    sksl = \
-    "half4 main(float2 coord) {" + \
-    "  float t = coord.x / 128;" + \
-    "  half4 white = half4(1);" + \
-    "  half4 black = half4(0,0,0,1);" + \
-    "  return mix(white, black, t);" + \
-    "}"
+    sksl = """
+    half4 main(float2 coord) {
+      float t = coord.x / 128;
+      half4 white = half4(1);
+      half4 black = half4(0,0,0,1);
+      return mix(white, black, t);
+    }"""
     autoResult = RuntimeEffect.MakeForShader(sksl)
     return autoResult.effect.makeShader(None)
 

@@ -22,12 +22,12 @@ def makeGradientShader():
 image = Image.open("resources/images/example_5.png")
 
 def draw(canvas):
-    sksl = \
-    "uniform shader input_1;" + \
-    "uniform shader input_2;" + \
-    "half4 main(float2 coord) {" + \
-    "  return input_1.eval(coord) * input_2.eval(coord);" + \
-    "}"
+    sksl = """
+    uniform shader input_1;
+    uniform shader input_2;
+    half4 main(float2 coord) {
+      return input_1.eval(coord) * input_2.eval(coord);
+    }"""
 
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 
