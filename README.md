@@ -47,3 +47,7 @@ for the same result as `SkSL_PremultipliedAlpha.py` below):
 `SkSL_LinearSRGB.py`:
 
 ![LinearSRGB](SkSL_example_outputs/LinearSRGB.png)
+
+`SkSL_Uniforms.py`:
+
+![Uniforms](SkSL_example_outputs/Uniforms.png)
