@@ -7,7 +7,7 @@
 
 # Based on chrome/m131:docs/examples/SkSL_Uniforms.cpp
 
-from skia import RuntimeEffect, RuntimeShaderBuilder, Paint, Rect, V4, ColorSpace, cms, ImageInfo, kRGBA_F16_ColorType, kPremul_AlphaType, Surfaces
+from skia import RuntimeEffect, RuntimeShaderBuilder, Paint, Rect, ColorSpace, cms, ImageInfo, kRGBA_F16_ColorType, kPremul_AlphaType, Surfaces
 
 def draw(canvas):
     rec2020 = ColorSpace.MakeRGB(cms.NamedTransferFn.kLinear, cms.NamedGamut.kRec2020)
@@ -25,8 +25,8 @@ def draw(canvas):
     effect = RuntimeEffect.MakeForShader(sksl)
 
     builder = RuntimeShaderBuilder(effect)
-    builder.setUniform("not_a_color", V4( 1, 0, 0, 1 ))
-    builder.setUniform("color"      , V4( 1, 0, 0, 1 ))
+    builder.setUniform("not_a_color", [1, 0, 0, 1])
+    builder.setUniform("color"      , [1, 0, 0, 1])
 
     paint = Paint()
 
