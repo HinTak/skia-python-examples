@@ -11,7 +11,7 @@ from skia import RuntimeEffect, Paint, ColorGRAY, \
     Image, SamplingOptions, FilterMode, RuntimeEffectChildPtr, SpanRuntimeEffectChildPtr
 
 from skia import Point, ColorWHITE, ColorBLACK, \
-    GradientShader, TileMode, VectorSkRuntimeEffectChildPtr
+    GradientShader, TileMode, VectorRuntimeEffectChildPtr
 
 def makeGradientShader():
     pts = [Point( 0, 0 ), Point( 128, 0 )]
@@ -30,7 +30,7 @@ def draw(canvas):
 
     imageShader = image.makeShader(SamplingOptions(FilterMode.kLinear))
 
-    children = VectorSkRuntimeEffectChildPtr([imageShader, makeGradientShader()])
+    children = VectorRuntimeEffectChildPtr([imageShader, makeGradientShader()])
 
     effect = RuntimeEffect.MakeForShader(sksl)
 
