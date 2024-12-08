@@ -18,14 +18,17 @@ from skia import *
 from sdl2.ext import get_events
 
 class ApplicationState:
-    def __init__(self):
+    def __init__(self, width, height):
         self.fQuit = False
+        self.window_width = width
+        self.window_height = height
         self.fRects = []
 
 def handle_error():
     error = SDL_GetError()
     print(error)
     SDL_ClearError()
+
 
 def handle_events(state, canvas):
     for event in get_events():
@@ -41,6 +44,18 @@ def handle_events(state, canvas):
                                                     event.button.y,
                                                     event.button.x,
                                                     event.button.y))
+        if event.type == SDL_WINDOWEVENT:
+            # Not interested in event.window.windowID
+            #
+            # SDL_WINDOWEVENT_RESIZED
+            #     window has been resized to data1 x data2; this event is always preceded by SDL_WINDOWEVENT_SIZE_CHANGED
+            # SDL_WINDOWEVENT_SIZE_CHANGED
+            #     window size has changed, either as a result of an API call or through the system or user changing the window size;
+            #     this event is followed by SDL_WINDOWEVENT_RESIZED if the size was changed by an external event, i.e. the user or the window manager
+            if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED or
+                event.window.event == SDL_WINDOWEVENT_RESIZED):
+                state.window_width = event.window.data1
+                state.window_height = event.window.data2
         if event.type ==  SDL_KEYDOWN:
             if event.key.keysym.sym == SDLK_ESCAPE:
                 state.fQuit = True
@@ -156,7 +171,7 @@ def main(argv):
     canvas = surface.getCanvas()
     canvas.scale(dw.value/dm.w, dh.value/dm.h)
     
-    state = ApplicationState()
+    state = ApplicationState(dw.value, dh.value)
 
     helpMessage = "Click and drag to create rects.  Press esc to quit."
 
@@ -181,12 +196,12 @@ def main(argv):
         handle_events(state, canvas)
 
         paint.setColor(ColorBLACK)
-        canvas.translate(0, 2 * font.getSize())
-        canvas.drawString(helpMessage, 100, 100, font, paint)
-        canvas.translate(0,-2 * font.getSize())
+        canvas.translate(0, dh.value - state.window_height)
+        canvas.drawString(helpMessage, 0, font.getSize(), font, paint)
         for rect in state.fRects:
             paint.setColor(random.randint(0, 0xFFFFFFFF) | 0x44808080)
             canvas.drawRect(rect, paint)
+        canvas.translate(0, -(dh.value - state.window_height))
 
         canvas.save()
         canvas.translate(dm.w / 2.0, dm.h / 2.0)
