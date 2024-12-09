@@ -8,10 +8,12 @@
 #
 #  Based on Google's own Skia + SDL C++ example, chrome/m92:example/SkiaSDLExample.cpp
 
-#  Notable difference with the c++ version:
+#  Notable difference (improvement!) with the c++ version:
 #     - The instructional text "Click and drag to create rects.  Press esc to quit."
 #       is drawn so that its top left corner is the top left corner of the window.
 #       The original draws its *bottom* left corner somewhat arbitrarily at 100,100.
+#     - The rotating star is drawn at the centre, even if the window
+#       is resized. The original is at a fixed position relative to the bottom left corner.
 
 from sdl2 import *
 from sdl2.video import *
@@ -209,7 +211,7 @@ def main(argv):
         canvas.translate(0, -(dh.value - state.window_height))
 
         canvas.save()
-        canvas.translate(dm.w / 2.0, dm.h / 2.0)
+        canvas.translate(state.window_width / 2.0, dh.value - state.window_height / 2.0)
         canvas.rotate(rotation)
         rotation+=1
         canvas.drawImage(image, -50.0, -50.0)
