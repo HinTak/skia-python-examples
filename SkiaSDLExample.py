@@ -8,6 +8,11 @@
 #
 #  Based on Google's own Skia + SDL C++ example, chrome/m92:example/SkiaSDLExample.cpp
 
+#  Notable difference with the c++ version:
+#     - The instructional text "Click and drag to create rects.  Press esc to quit."
+#       is drawn so that its top left corner is the top left corner of the window.
+#       The original draws its *bottom* left corner somewhat arbitrarily at 100,100.
+
 from sdl2 import *
 from sdl2.video import *
 from ctypes import byref, c_int
