@@ -3,10 +3,12 @@
 #
 #  Skia + SDL example
 #
-#  Copyright 2024 Hin-Tak Leung
+#  Copyright 2025 Hin-Tak Leung
 #  Distributed under the terms of the new BSD license.
 #
 #  Based on Google's own Skia + SDL C++ example, chrome/m92:example/SkiaSDLExample.cpp
+
+#  Ported to PySDL3, 2025
 
 #  Notable difference (improvement!) with the c++ version:
 #     - The instructional text "Click and drag to create rects.  Press esc to quit."
