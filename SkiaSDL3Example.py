@@ -122,6 +122,21 @@ def main(argv):
         handle_error()
         return 1
 
+    # SDL2's SDL_CreateWindow() takes also SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED
+    # for positioning. This is not particularly interesting, but can be done so in SDL3 with
+    # SDL_CreateWindowWithProperties():
+    #
+    #     props = SDL_CreateProperties()
+    #     SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, ... )
+    #     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED)
+    #     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED)
+    #     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, ...)
+    #     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, ...)
+    #     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_FLAGS_NUMBER, ...)
+    #     window = SDL_CreateWindowWithProperties(props)
+    #
+    # The fewer-arg SDL3 SDL_CreateWindow() works just as well for main window; the centering may be useful
+    # for popup or modal windows.
     window = SDL_CreateWindow(b"SDL Window", dm.contents.w, dm.contents.h, windowFlags)
 
     if not window:
