@@ -144,7 +144,16 @@ def main(argv):
     
     dw = c_int(0)
     dh = c_int(0)
-    SDL_GetWindowSizeInPixels(window, byref(dw), byref(dh))
+    ##SDL_GetWindowSizeInPixels(window, byref(dw), byref(dh)) # was SDL_GL_GetDrawableSize in SDL2
+    #
+    # SDL3 Note:
+    #     Despite what the SDL3 migration said, SDL3's "SDL_GetWindowSizeInPixels()" cannot be used in
+    #     place of SDL2's "SDL_GL_GetDrawableSize()".
+    #     Rather, SDL2's "SDL_GL_GetDrawableSize()" always returns size of initial full desktop,
+    #     whereas "SDL_GetWindowSizeInPixels()" is smaller, minus window manager estate and
+    #     windows menu bar. So in SDL2, the canvas.scale(...) below was no-ops.
+    dw.value = dm.contents.w
+    dh.value = dm.contents.h
 
     glViewport(0, 0, dw.value, dh.value)
     glClearColor(1, 1, 1, 1)
