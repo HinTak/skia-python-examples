@@ -1,3 +1,7 @@
+# Copyright 2025, Ajit <zlksnkwork@gmail.com> , https://github.com/ajitid
+
+# See https://github.com/HinTak/skia-python-examples/issues/6
+
 import contextlib
 import sdl3
 import skia
