@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Skia + SDL example
+#  Skia + SDL2 example
 #
 #  Copyright 2024 Hin-Tak Leung
 #  Distributed under the terms of the new BSD license.
