@@ -15,7 +15,7 @@ WINDOW_TITLE = b"Skia + PySDL3 Example" # SDL requires bytes for titles
 def sdl_video_init():
     """Initialize and quit SDL video subsystem."""
     print("Initializing SDL Video...")
-    if sdl3.SDL_Init(sdl3.SDL_INIT_VIDEO) < 0:
+    if not sdl3.SDL_Init(sdl3.SDL_INIT_VIDEO):
         raise RuntimeError(f"SDL_Init Error: {sdl3.SDL_GetError()}")
     try:
         yield
@@ -54,13 +54,13 @@ def sdl_gl_window(title, width, height):
         raise RuntimeError(f"SDL_GL_CreateContext Error: {sdl3.SDL_GetError()}")
 
     print("Making GL Context Current...")
-    if sdl3.SDL_GL_MakeCurrent(window, gl_context) < 0:
+    if not sdl3.SDL_GL_MakeCurrent(window, gl_context):
          sdl3.SDL_GL_DestroyContext(gl_context)
          sdl3.SDL_DestroyWindow(window)
          raise RuntimeError(f"SDL_GL_MakeCurrent Error: {sdl3.SDL_GetError()}")
 
     # Optional: Enable VSync
-    # if sdl3.SDL_GL_SetSwapInterval(1) < 0:
+    # if not sdl3.SDL_GL_SetSwapInterval(1):
     #    print(f"Warning: Unable to set VSync! SDL Error: {sdl3.SDL_GetError()}")
 
     try:
