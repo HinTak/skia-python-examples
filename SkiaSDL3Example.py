@@ -116,6 +116,7 @@ def main(argv):
         handle_error()
         return 1
 
+    # Just use the first available display
     instance_id = displays[0]
     dm = SDL_GetDesktopDisplayMode(instance_id) 
     if (dm == None):
