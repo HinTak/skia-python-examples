@@ -6,6 +6,7 @@
 # SDL2 + SkSL
 
 # Multiple examples from https://shaders.skia.org/
+# Requires at least skia-python v132.b11
 
 from sdl2 import *
 import skia
@@ -19,6 +20,7 @@ title = b"Skia + PySDL2 + SkSL Example"
 SkSL_code = [ """
 // Source: @notargs https://twitter.com/notargs/status/1250468645030858753
 float f(vec3 p) {
+    float iTime = float(iStep) / 1000.0;
     p.z -= iTime * 10.;
     float a = p.z * .1;
     p.xy *= mat2(cos(a), sin(a), -sin(a), cos(a));
@@ -59,6 +61,7 @@ mat3 rotate3D(float angle, vec3 axis){
 }
 
 half4 main(float2 FC) {
+  float iTime = float(iStep) / 1000.0;
   vec4 o = vec4(0);
   vec2 r = iResolution.xy;
   vec3 v = vec3(1,3,7), p = vec3(0);
@@ -124,6 +127,7 @@ float fbm(vec2 n) {
 // -----------------------------------------------
 
 half4 main(in vec2 fragCoord ) {
+    float iTime = float(iStep) / 1000.0;
     vec2 p = fragCoord.xy / iResolution.xy;
 	vec2 uv = p*vec2(iResolution.x/iResolution.y,1.0);    
     float time = iTime * speed;
@@ -195,6 +199,7 @@ half4 main(in vec2 fragCoord ) {
 """
 // Source: @XorDev https://twitter.com/XorDev/status/1475524322785640455
 vec4 main(vec2 FC) {
+  float iTime = float(iStep) / 1000.0;
   vec4 o = vec4(0);
   vec2 p = vec2(0), c=p, u=FC.xy*2.-iResolution.xy;
   float a;
@@ -223,6 +228,7 @@ float julia(vec2 uv, vec2 c) {
 
 vec4 main( in vec2 fragCoord )
 {
+    float iTime = float(iStep) / 1000.0;
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = -1.0 + 2.0 * fragCoord / iResolution.xy;
 
@@ -247,6 +253,7 @@ vec3 hsv(float h, float s, float v){
 }
 
 vec4 main(vec2 FC) {
+  float iTime = float(iStep) / 1000.0;
   float e=0,R=0,t=iTime,s;
   vec2 r = iResolution.xy;
   vec3 q=vec3(0,0,-1), p, d=vec3((FC.xy-.5*r)/r.y,.7);
@@ -265,7 +272,6 @@ vec4 main(vec2 FC) {
   }
   return o;
 }
--
 """]
 
 def draw(canvas, builder, step):
@@ -354,7 +360,7 @@ def main(builder):
         
         with surface as canvas:
             draw(canvas, builder, step)
-        step += 1
+        step += 10 # arbitrary to look dynamic
         surface.flushAndSubmit()
         
         SDL_GL_SwapWindow(window)
@@ -374,9 +380,13 @@ if __name__ == '__main__':
         print("Usage (example N): %s N" % (argv[0]))
         exit(1)
 
-    input = int(argv[1])
+    input = int(argv[1]) % len(SkSL_code)
 
     from skia import RuntimeEffect, RuntimeShaderBuilder
-    litEffect = RuntimeEffect.MakeForShader(SkSL_code[input])
+    header = """
+uniform int iStep;
+float4 iResolution = float4(512, 512, 512, 512);
+"""
+    litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[input])
     builder = RuntimeShaderBuilder(litEffect)
     main(builder)
