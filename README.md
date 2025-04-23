@@ -13,6 +13,8 @@ Note on Linux, it is highly sensitive to locale, and you might need to unset `LA
 
 ![test-en](https://github.com/user-attachments/assets/9ff6dff5-a684-46e9-9a30-cd91455845cb)
 
+`SkSL_ShaderMulti+SDL2.py` is a port of the animation on https://shaders.skia.org/ . Run it with a number argument (0 to 6) for the 7 examples on https://shaders.skia.org/ .
+
 ## SkSL examples
 
 original:
