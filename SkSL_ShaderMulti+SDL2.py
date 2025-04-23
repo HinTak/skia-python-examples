@@ -10,7 +10,7 @@
 
 from sdl2 import *
 import skia
-from skia import Paint, Rect
+from skia import Paint, Rect, Font, Typeface, ColorWHITE
 from OpenGL import GL
 import ctypes
 
@@ -274,13 +274,29 @@ vec4 main(vec2 FC) {
 }
 """]
 
-def draw(canvas, builder, step):
+current_index = 0
+builder = None
+
+def setBuilder():
+    global current_index, builder
+    input = current_index % len(SkSL_code)
+    from skia import RuntimeEffect, RuntimeShaderBuilder
+    header = """
+uniform int iStep;
+float4 iResolution = float4(512, 512, 512, 512);
+"""
+    litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[input])
+    builder = RuntimeShaderBuilder(litEffect)
+
+def draw(canvas, step):
+    global builder
     builder.setUniform("iStep", step)
     paint = Paint()
     paint.setShader(builder.makeShader())
     canvas.drawRect(Rect(0,0,512,512), paint)
 
-def main(builder):
+def main():
+    global current_index, builder
     if SDL_Init(SDL_INIT_VIDEO) != 0:
         raise RuntimeError(f"SDL_Init Error: {SDL_GetError()}")
 
@@ -344,6 +360,9 @@ def main(builder):
     running = True
     event = SDL_Event() # Create event structure once
     step = 0
+    font = Font(Typeface("Roman"))
+    paintWHITE = Paint()
+    paintWHITE.setColor(ColorWHITE)
 
     while running:
         while SDL_PollEvent(event):
@@ -351,6 +370,11 @@ def main(builder):
                 print("Quit event received.")
                 running = False
                 break
+            if event.type == SDL_MOUSEBUTTONDOWN:
+                if event.button.state == SDL_PRESSED:
+                    # Don't care where you clicked, just that you did!
+                    current_index += 1
+                    setBuilder()
 
         if not running:
             break
@@ -359,7 +383,8 @@ def main(builder):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
         
         with surface as canvas:
-            draw(canvas, builder, step)
+            draw(canvas, step)
+            canvas.drawString("Click to cycle through the examples", 0, font.getSize(), font, paintWHITE)
         step += 10 # arbitrary to look dynamic
         surface.flushAndSubmit()
         
@@ -375,18 +400,5 @@ def main(builder):
     SDL_Quit()
 
 if __name__ == '__main__':
-    from sys import argv
-    if len(argv) < 2:
-        print("Usage (example N): %s N" % (argv[0]))
-        exit(1)
-
-    input = int(argv[1]) % len(SkSL_code)
-
-    from skia import RuntimeEffect, RuntimeShaderBuilder
-    header = """
-uniform int iStep;
-float4 iResolution = float4(512, 512, 512, 512);
-"""
-    litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[input])
-    builder = RuntimeShaderBuilder(litEffect)
-    main(builder)
+    setBuilder()
+    main()
