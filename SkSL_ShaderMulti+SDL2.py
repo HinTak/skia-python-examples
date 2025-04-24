@@ -17,6 +17,11 @@ import ctypes
 width, height = 512, 512
 title = b"Skia + PySDL2 + SkSL Example"
 
+# The first snipplet can be found twice within skia as:
+#     skia:gm/runtimefunctions.cpp
+#     skia:resources/sksl/realistic/BlueNeurons.rts
+# It is not clear where the other examples are stored at the moment.
+# They are merely cut-and-paste from https://shaders.skia.org/ .
 SkSL_code = [ """
 // Source: @notargs https://twitter.com/notargs/status/1250468645030858753
 float f(vec3 p) {
