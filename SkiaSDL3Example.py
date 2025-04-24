@@ -20,7 +20,9 @@
 from sdl3 import *
 from ctypes import byref, c_int
 from OpenGL.GL import glViewport, glClearColor, glClearStencil, glClear, GL_COLOR_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, GL_RGBA8
-from OpenGL.GLES2.EXT.texture_storage import GL_BGRA8_EXT
+import sys
+if not sys.platform.startswith("win"):
+    from OpenGL.GLES2.EXT.texture_storage import GL_BGRA8_EXT
 from skia import *
 
 class ApplicationState:
@@ -191,7 +193,7 @@ def main(argv):
         colorType = kRGBA_8888_ColorType
     else:
         colorType = kBGRA_8888_ColorType
-        if SDL_GL_CONTEXT_PROFILE_ES == contextType.value:
+        if not sys.platform.startswith("win") and SDL_GL_CONTEXT_PROFILE_ES == contextType.value:
             fFormat = GL_BGRA8_EXT
         else:
             fFormat = GL_RGBA8
