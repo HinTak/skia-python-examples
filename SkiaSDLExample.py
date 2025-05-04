@@ -8,7 +8,7 @@
 #
 #  Based on Google's own Skia + SDL C++ example, chrome/m92:example/SkiaSDLExample.cpp
 
-#  Known to work with SDL2 2.30.11 and mis-behave with sdl2 compat 2.32.54 . HTL 2025-04-29
+#  Known to work with SDL2 2.30.11 and mis-behave with sdl2 compat 2.32.54 (on SDL3 3.2.10). HTL 2025-04-29
 
 #  Notable difference (improvement!) with the c++ version:
 #     - The instructional text "Click and drag to create rects.  Press esc to quit."
