@@ -155,7 +155,7 @@ uniform shader iImage1;          // An input image.
 """
     header = """
 uniform float4 iMouse;
-float4 iResolution = float4(512, 512, 512, 512);
+float3 iResolution = float3(512, 512, 512);
 """
     litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[0])
     builder = RuntimeShaderBuilder(litEffect)

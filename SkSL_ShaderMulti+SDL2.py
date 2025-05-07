@@ -288,7 +288,7 @@ def setBuilder():
     from skia import RuntimeEffect, RuntimeShaderBuilder
     header = """
 uniform int iStep;
-float4 iResolution = float4(512, 512, 512, 512);
+float3 iResolution = float3(512, 512, 512);
 """
     litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[input])
     builder = RuntimeShaderBuilder(litEffect)
