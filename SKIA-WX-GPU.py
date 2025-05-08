@@ -19,9 +19,7 @@ import ctypes
 import wx
 from wx import glcanvas
 import skia
-from OpenGL.GL import glViewport
-
-GL_RGBA8 = 0x8058
+from OpenGL.GL import glViewport, GL_RGBA8
 
 
 """Enable high-res displays."""
