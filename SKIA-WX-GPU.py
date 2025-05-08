@@ -6,6 +6,12 @@
 
 # See https://github.com/kyamagu/skia-python/issues/323
 
+# Changes:
+#     - HTL (2025-05): Remove dependency on moderngl
+#                      (and there was strictly speaking a bug
+#                       in on_size / set_viewport of
+#                       messing with moderngl's ctx)
+
 # python imports
 import math
 import ctypes
@@ -13,7 +19,7 @@ import ctypes
 import wx
 from wx import glcanvas
 import skia
-import moderngl
+from OpenGL.GL import glViewport
 
 GL_RGBA8 = 0x8058
 
@@ -33,7 +39,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         glcanvas.GLCanvas.__init__(self, parent, -1, size=size)
         self.glctx = glcanvas.GLContext(self)  # ✅ Correct GLContext
         self.size = size
-        self.ctx = None
+        self.glinit = False
         self.canvas = None
         self.surface = None
         self.is_dragging = False
@@ -53,8 +59,6 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
 
     def init_gl(self):
         """Initialize Skia GPU context and surface."""
-        if self.ctx is None:
-            self.ctx = moderngl.create_context()
         context = skia.GrDirectContext.MakeGL()
         backend_render_target = skia.GrBackendRenderTarget(
             self.size[0], self.size[1], 0, 0, skia.GrGLFramebufferInfo(
@@ -65,13 +69,14 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
             skia.kRGBA_8888_ColorType, skia.ColorSpace.MakeSRGB()
         )
         self.canvas = self.surface.getCanvas()
+        self.glinit = True
 
     def on_paint(self, event):
         """Handle drawing."""
 
-        self.SetCurrent(self.glctx)
-
-        if self.canvas is None:
+        if not self.glinit:
+            self.SetCurrent(self.glctx)
+            glViewport(0, 0, self.size.width, self.size.height)
             self.init_gl()
 
         # This is your actual skia based drawing function
@@ -137,7 +142,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         w, h = self.GetSize()
         if w == 0 or h == 0:
             return
-        self.ctx.viewport = (0, 0, self.size.width, self.size.height)
+        glViewport(0, 0, self.size.width, self.size.height)
 
         self.canvas.clear(skia.ColorWHITE)
         self.canvas.save()
@@ -163,6 +168,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
 
     def on_size(self, event):
         """Handle resizing of the canvas."""
+        self.glinit = False
         wx.CallAfter(self.set_viewport)
         event.Skip()
 
@@ -174,10 +180,6 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         width = int(size.width * scale)
         height = int(size.height * scale)
         self.size = wx.Size(width, height)
-        if self.ctx:
-            self.SetCurrent(self.glctx)
-            self.ctx.viewport = (0, 0, width, height)
-            self.init_gl()
 
 
 class MainFrame(wx.Frame):
