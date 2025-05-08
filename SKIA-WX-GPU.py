@@ -36,7 +36,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
     def __init__(self, parent, size):
         glcanvas.GLCanvas.__init__(self, parent, -1, size=size)
         self.glctx = glcanvas.GLContext(self)  # ✅ Correct GLContext
-        self.size = size
+        self.size = wx.Size(size[0], size[1])
         self.glinit = False
         self.canvas = None
         self.surface = None
@@ -59,7 +59,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         """Initialize Skia GPU context and surface."""
         context = skia.GrDirectContext.MakeGL()
         backend_render_target = skia.GrBackendRenderTarget(
-            self.size[0], self.size[1], 0, 0, skia.GrGLFramebufferInfo(
+            self.size.width, self.size.height, 0, 0, skia.GrGLFramebufferInfo(
                 0, GL_RGBA8)
         )
         self.surface = skia.Surface.MakeFromBackendRenderTarget(
