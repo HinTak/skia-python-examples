@@ -61,11 +61,7 @@ class WxGLCanvas(GLCanvas):
 class MainFrame(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Skia WxPython GPU Canvas", size=(640, 480))
-        panel = wx.Panel(self)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.wxcanvas = WxGLCanvas(panel, (640, 480))
-        sizer.Add(self.wxcanvas, 1, wx.EXPAND)
-        panel.SetSizer(sizer)
+        self.wxcanvas = WxGLCanvas(self, (640, 480))
         self.Show()
 
 if __name__ == "__main__":
