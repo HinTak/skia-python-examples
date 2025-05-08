@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+# Copyright 2025, Prashant Saxena, https://github.com/prashant-saxena
+
+# SKIA-WX-CPU Example
+
+# See https://github.com/kyamagu/skia-python/issues/323
+
 # python imports
 import math
 import ctypes
