@@ -1,3 +1,5 @@
+# Copyright 2025, Hin-Tak Leung
+
 import wx
 from wx.glcanvas import GLCanvas, GLContext
 import skia
