@@ -18,7 +18,7 @@ path.close()
 
 class WxGLCanvas(GLCanvas):
     def __init__(self, parent, size):
-        GLCanvas.__init__(self, parent, -1, size=size)
+        super().__init__(parent, -1, size=size)
         self.glctx = GLContext(self)
         self.size = wx.Size(size[0], size[1])
         self.skia_surface = None
