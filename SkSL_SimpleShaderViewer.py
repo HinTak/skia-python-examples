@@ -144,6 +144,12 @@ if __name__ == '__main__':
     print("uniforms(inputs):")
     for uniform in uniforms:
         print("\t", uniform.type, "\t", uniform.name)
+    # builder.children() don't have names
+    children = builder.effect().children()
+    if (len(children) > 0):
+        print("childen(inputs):")
+        for child in children:
+            print("\t", child.type, "\t", child.name)
     if (builder.uniform("iResolution").type == skia.RuntimeEffect.UniformType.kFloat2):
         builder.setUniform("iResolution", [512, 512])
     elif (builder.uniform("iResolution").type == skia.RuntimeEffect.UniformType.kFloat3):
