@@ -153,14 +153,16 @@ if __name__ == '__main__':
         assert False
 
     image = skia.Image.open("8de3a3924cb95bd0e95a443fff0326c869f9d4979cd1d5b6e94e2a01f5be53e9.jpg")
-    if (builder.uniform("iImage1Resolution") is not None):
-        if (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat2):
-            builder.setUniform("iImage1Resolution", [512, 512])
-        elif (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat3):
-            builder.setUniform("iImage1Resolution", [512, 512, 512])
-        else:
-            print("Unknown iResolution type:", builder.uniform("iResolution").type)
-            assert False
+    if (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat2):
+        builder.setUniform("iImage1Resolution", [512, 512])
+    elif (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat3):
+        builder.setUniform("iImage1Resolution", [512, 512, 512])
+    elif (builder.uniform("iImage1Resolution").type == None):
+        # Does not exist, okay
+        pass
+    else:
+        print("Unknown iResolution type:", builder.uniform("iResolution").type)
+        assert False
 
     if (len(builder.children()) > 0):
         builder.setChild("iImage1", image.makeShader(skia.SamplingOptions(skia.FilterMode.kLinear)))
