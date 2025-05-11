@@ -1,6 +1,5 @@
 uniform float iTime;
 uniform float2 iResolution;
-uniform float4 iMouse;
 
 // Created by Stephane Cuillerdier - @Aiekick/2016
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.

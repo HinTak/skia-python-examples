@@ -1,6 +1,5 @@
 uniform float3 iResolution;      // Viewport resolution (pixels)
 uniform float  iTime;            // Shader playback time (s)
-uniform float4 iMouse;           // Mouse drag pos=.xy Click pos=.zw (pixels)
 
 // Source: @XorDev https://twitter.com/XorDev/status/1475524322785640455
 vec4 main(vec2 FC) {
