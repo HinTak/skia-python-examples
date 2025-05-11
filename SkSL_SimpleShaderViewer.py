@@ -164,6 +164,6 @@ if __name__ == '__main__':
         print("Unknown iResolution type:", builder.uniform("iResolution").type)
         assert False
 
-    if (len(builder.children()) > 0):
+    if (builder.child("iImage1").type == skia.RuntimeEffect.ChildType.kShader):
         builder.setChild("iImage1", image.makeShader(skia.SamplingOptions(skia.FilterMode.kLinear)))
     main()
