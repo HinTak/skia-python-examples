@@ -2,8 +2,6 @@
 uniform float3 iResolution;      // Viewport resolution (pixels)
 uniform float  iTime;            // Shader playback time (s)
 uniform float4 iMouse;           // Mouse drag pos=.xy Click pos=.zw (pixels)
-uniform float3 iImageResolution; // iImage1 resolution (pixels)
-uniform shader iImage1;          // An input image.
 
 // https://shaders.skia.org/?id=23a360c975c3cb195c89ccdf65ec549e279ce8a959643b447e69cb70614a6eca
 

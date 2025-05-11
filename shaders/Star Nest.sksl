@@ -1,8 +1,6 @@
 uniform float3 iResolution;      // Viewport resolution (pixels)
 uniform float  iTime;            // Shader playback time (s)
 uniform float4 iMouse;           // Mouse drag pos=.xy Click pos=.zw (pixels)
-uniform float3 iImage1Resolution; // iImage1 resolution (pixels)
-uniform shader iImage1;          // An input image.
 
 // Star Nest by Pablo Roman Andrioli
 
