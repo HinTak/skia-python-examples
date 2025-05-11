@@ -135,8 +135,19 @@ if __name__ == '__main__':
     with open(sys.argv[1]) as f:
         content = f.readlines();
         whole_input = "".join(content)
-        print("".join([i for i in content if 'uniform' in i]))
+        #print("".join([i for i in content if 'uniform' in i]))
         setBuilder(whole_input)
-    builder.setUniform("iResolution", [512, 512])
-    builder.setUniform("iResolution", [512, 512, 512])
+
+    #print(builder.uniforms())
+    uniforms = builder.effect().uniforms()
+    print("uniforms(inputs):")
+    for uniform in uniforms:
+        print("\t", uniform.type, "\t", uniform.name)
+    if (builder.uniform("iResolution").type == skia.RuntimeEffect.UniformType.kFloat2):
+        builder.setUniform("iResolution", [512, 512])
+    elif (builder.uniform("iResolution").type == skia.RuntimeEffect.UniformType.kFloat3):
+        builder.setUniform("iResolution", [512, 512, 512])
+    else:
+        print("Unknown iResolution type:", builder.uniform("iResolution").type)
+        assert False
     main()
