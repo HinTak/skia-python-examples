@@ -20,6 +20,18 @@ import time
 width, height = 512, 512
 title = b"Python SkiaSimpleShaderViewer"
 
+'''
+In the context of GLSL shaders for OpenGL, iDate is a built-in uniform variable often used in shaders to access the current date and time. It's a vec4 (4-element vector) containing the year, month, day, and optionally, the time of day.
+
+iDate is a predefined variable that ShaderToy and similar environments provide to shaders. OpenGL itself doesn't automatically set it, so you'll need to use a GLSL-compatible environment (like ShaderToy) that provides this value.
+
+The iDate uniform is a vec4 which means it contains four floating-point values. These typically represent:
+Year
+Month
+Day
+Time of day (often represented as a float between 0 and 1, representing the fraction of the day that has passed)
+'''
+
 builder = None
 
 def setBuilder(input_file):
@@ -131,17 +143,6 @@ def main():
     SDL_Quit()
 
 if __name__ == '__main__':
-'''
-In the context of GLSL shaders for OpenGL, iDate is a built-in uniform variable often used in shaders to access the current date and time. It's a vec4 (4-element vector) containing the year, month, day, and optionally, the time of day.
-
-iDate is a predefined variable that ShaderToy and similar environments provide to shaders. OpenGL itself doesn't automatically set it, so you'll need to use a GLSL-compatible environment (like ShaderToy) that provides this value.
-
-The iDate uniform is a vec4 which means it contains four floating-point values. These typically represent:
-Year
-Month
-Day
-Time of day (often represented as a float between 0 and 1, representing the fraction of the day that has passed)
-'''
     import sys
     with open(sys.argv[1]) as f:
         content = f.readlines();
