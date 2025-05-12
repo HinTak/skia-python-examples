@@ -113,6 +113,8 @@ def main():
     paintWHITE = Paint()
     paintWHITE.setColor(ColorWHITE)
     initial_time = time.time()
+    mouse = Rect.MakeLTRB(0,0,0,0)
+    builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
 
     while running:
         while SDL_PollEvent(event):
@@ -121,6 +123,21 @@ def main():
                 running = False
                 break
 
+            if event.type == SDL_MOUSEMOTION:
+                if event.motion.state == SDL_PRESSED:
+                    mouse.fRight = event.motion.x
+                    mouse.fBottom = event.motion.y
+                    builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
+            if event.type == SDL_MOUSEBUTTONDOWN:
+                if event.button.state == SDL_PRESSED: # -z,-w
+                    mouse.fLeft = -event.button.x
+                    mouse.fTop = -event.button.y
+                    builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
+            if event.type == SDL_MOUSEBUTTONUP:
+                if event.button.state == SDL_RELEASED: # z,w flipped
+                    mouse.fLeft = -mouse.fLeft
+                    mouse.fTop = -mouse.fTop
+                    builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
         if not running:
             break
         
