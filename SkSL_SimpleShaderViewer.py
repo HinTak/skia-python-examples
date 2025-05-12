@@ -138,13 +138,18 @@ if __name__ == '__main__':
         #print("".join([i for i in content if 'uniform' in i]))
         setBuilder(whole_input)
 
-    #print(builder.uniforms())
+    #print(builder.uniforms()) - SkData
     #print(builder.children(), len(builder.children()))
     uniforms = builder.effect().uniforms()
     print("uniforms(inputs):")
     for uniform in uniforms:
         print("\t", uniform.type, "\t", uniform.name)
-    # builder.children() don't have names
+    # builder.children() - childptr don't have names
+    bdchildren = builder.children()
+    if (len(bdchildren) > 0):
+        print("builder childen: (No Type before setting)")
+        for child in bdchildren:
+            print("\t", child.type)
     children = builder.effect().children()
     if (len(children) > 0):
         print("childen(inputs):")
@@ -172,4 +177,8 @@ if __name__ == '__main__':
 
     if (builder.child("iImage1").type == skia.RuntimeEffect.ChildType.kShader):
         builder.setChild("iImage1", image.makeShader(skia.SamplingOptions(skia.FilterMode.kLinear)))
+    if (len(bdchildren) > 0):
+        print("builder dchilden: (Type setted)")
+        for child in bdchildren:
+            print("\t", child.type)
     main()
