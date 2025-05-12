@@ -8,6 +8,13 @@
 # Loads a *.sksl file, as is, from the "shaders" directory of
 # https://github.com/jimmckeeth/SkiaSimpleShaderViewer/ .
 
+# Note:
+#     HTL: I don't want to do shadowboy-style: z > 0 && w < 0 for
+#          current-drags.
+#          Giving special meaning to -ve value of iMouse means
+#          that you cannot use offscreen mouse co-ordinates.
+#          I'll allow z < 0 && w < 0 for mouse release, but that's it.
+
 # Requires at least skia-python v137+
 
 from sdl2 import *
@@ -127,14 +134,17 @@ def main():
                 if event.motion.state == SDL_PRESSED:
                     mouse.fRight = event.motion.x
                     mouse.fBottom = event.motion.y
+                    # HTL: I don't want to do shadowboy-style: z > 0 && w < 0
                     builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
             if event.type == SDL_MOUSEBUTTONDOWN:
                 if event.button.state == SDL_PRESSED: # -z,-w
+                    (mouse.fRight, mouse.fBottom) = event.button.x, event.button.y
                     mouse.fLeft = -event.button.x
                     mouse.fTop = -event.button.y
                     builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
             if event.type == SDL_MOUSEBUTTONUP:
                 if event.button.state == SDL_RELEASED: # z,w flipped
+                    (mouse.fRight, mouse.fBottom) = event.button.x, event.button.y
                     mouse.fLeft = -mouse.fLeft
                     mouse.fTop = -mouse.fTop
                     builder.setUniform("iMouse", [mouse.fRight, mouse.fBottom, mouse.fLeft, mouse.fTop])
@@ -192,7 +202,6 @@ if __name__ == '__main__':
         print("Unknown iResolution type:", builder.uniform("iResolution").type)
         assert False
 
-    image = skia.Image.open("8de3a3924cb95bd0e95a443fff0326c869f9d4979cd1d5b6e94e2a01f5be53e9.jpg")
     if (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat2):
         builder.setUniform("iImage1Resolution", [512, 512])
     elif (builder.uniform("iImage1Resolution").type == skia.RuntimeEffect.UniformType.kFloat3):
@@ -205,6 +214,7 @@ if __name__ == '__main__':
         assert False
 
     if (builder.child("iImage1").type == skia.RuntimeEffect.ChildType.kShader):
+        image = skia.Image.open("8de3a3924cb95bd0e95a443fff0326c869f9d4979cd1d5b6e94e2a01f5be53e9.jpg")
         builder.setChild("iImage1", image.makeShader(skia.SamplingOptions(skia.FilterMode.kLinear)))
     if (len(bdchildren) > 0):
         print("builder dchilden: (Type setted)")
