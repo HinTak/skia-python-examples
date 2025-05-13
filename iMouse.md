@@ -65,3 +65,16 @@ Creating animations that respond to mouse clicks or movements.
 Implementing basic drag-and-drop mechanics.
 Simulating user interactions in visual effects or games.
 By leveraging the iMouse uniform, you can make ShaderToy shaders more dynamic and interactive, enhancing their visual appeal and usability.
+You are correct that ShaderToy uses negative values of iMouse.z and iMouse.w to indicate a mouse release. This behavior is part of the ShaderToy platform's specification for the iMouse uniform.
+
+Here is how it works:
+
+While the mouse button is pressed, iMouse.z and iMouse.w contain the coordinates of the press in pixels.
+When the mouse button is released, iMouse.z and iMouse.w are set to the negative of their previous values, indicating the release event.
+If the mouse is not interacting with the canvas, all components of iMouse are set to 0.0.
+Unfortunately, ShaderToy does not have formal documentation for every detail of its uniforms. However, this behavior has been observed and discussed in ShaderToy-related community forums, tutorials, and in the source code of shaders shared on ShaderToy itself.
+
+Practical Reference
+You can find shaders demonstrating this behavior by searching for interactive ShaderToy examples (e.g., shaders that use dragging or click-release mechanics). For example, searching for shaders that check iMouse.z < 0.0 or iMouse.w < 0.0 will lead you to examples where the negative values of iMouse.zw are explicitly handled.
+
+If you'd like, I can help you search for ShaderToy examples or shaders that document this behavior in their comments!
