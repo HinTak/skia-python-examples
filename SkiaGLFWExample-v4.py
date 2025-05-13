@@ -93,7 +93,7 @@ def main():
     def on_mouse_button(window, button, action, mods):
         if button == glfw.MOUSE_BUTTON_LEFT:
             x, y = glfw.get_cursor_pos(window)
-            y = state.window_height - y  # Convert to bottom-left origin
+            #y = state.window_height - y  # Convert to bottom-left origin
             if action == glfw.PRESS:
                 state.drawing = True
                 state.fRects.append(Rect.MakeLTRB(x, y, x, y))
@@ -101,7 +101,7 @@ def main():
                 state.drawing = False
 
     def on_cursor_pos(window, xpos, ypos):
-        ypos = state.window_height - ypos
+        #ypos = state.window_height - ypos
         if state.drawing and state.fRects:
             rect = state.fRects.pop()
             rect.fRight = xpos
