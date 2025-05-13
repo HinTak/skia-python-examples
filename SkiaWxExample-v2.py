@@ -9,6 +9,7 @@
 import wx
 import sys
 from skia import *
+import numpy as np
 
 class ApplicationState:
     def __init__(self, width, height):
@@ -106,13 +107,14 @@ class SkiaPanel(wx.Panel):
         canvas.flush()
 
         # Correct pixel extraction for wx.Bitmap
-        arr = surface.readPixels()
-        if arr is not None:
-            wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, arr.tobytes())
-            dc = wx.AutoBufferedPaintDC(self)
+        arr = np.zeros((h, w, 4), dtype=np.uint8)
+        info = ImageInfo.MakeN32Premul(w, h)
+        success = surface.readPixels(info, arr, w * 4, 0, 0)
+        dc = wx.AutoBufferedPaintDC(self)
+        if success:
+            wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, arr)
             dc.DrawBitmap(wx_bmp, 0, 0)
         else:
-            dc = wx.AutoBufferedPaintDC(self)
             dc.Clear()
 
         # Schedule next frame for animation
