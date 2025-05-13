@@ -48,8 +48,9 @@ def mouse_button_callback(window, button, action, mods):
         y = state.window_height - y  # invert y for Skia canvas
         if action == glfw.PRESS:
             rect = Rect.MakeLTRB(x, y, x, y)
+            color = random.randint(0, 0xFFFFFFFF) | 0x44808080
             state.last_rect = rect
-            state.fRects.append(rect)
+            state.fRects.append((rect, color))
             state.dragging = True
         elif action == glfw.RELEASE:
             state.last_rect = None
@@ -59,10 +60,10 @@ def cursor_pos_callback(window, xpos, ypos):
     state = glfw.get_window_user_pointer(window)
     if state.dragging and state.last_rect:
         ypos = state.window_height - ypos  # invert y for Skia canvas
-        rect = state.fRects.pop()
+        rect, color = state.fRects.pop()
         rect.fRight = xpos
         rect.fBottom = ypos
-        state.fRects.append(rect)
+        state.fRects.append((rect, color))
 
 def key_callback(window, key, scancode, action, mods):
     state = glfw.get_window_user_pointer(window)
@@ -164,8 +165,8 @@ def main(argv):
         canvas.clear(ColorWHITE)
         paint.setColor(ColorBLACK)
         canvas.drawString(helpMessage, 0, font.getSize(), font, paint)
-        for rect in state.fRects:
-            paint.setColor(random.randint(0, 0xFFFFFFFF) | 0x44808080)
+        for rect, color in state.fRects:
+            paint.setColor(color)
             canvas.drawRect(rect, paint)
 
         canvas.save()
