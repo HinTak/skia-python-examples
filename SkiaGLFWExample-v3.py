@@ -30,7 +30,7 @@ def mouse_button_callback(window, button, action, mods):
     state = glfw.get_window_user_pointer(window)
     if button == glfw.MOUSE_BUTTON_LEFT:
         x, y = glfw.get_cursor_pos(window)
-        y = state.window_height - y  # Convert to Skia coordinate
+        #y = state.window_height - y  # Convert to Skia coordinate
         if action == glfw.PRESS:
             state.fRects.append(Rect.MakeLTRB(x, y, x, y))
             state.dragging = True
@@ -40,7 +40,7 @@ def mouse_button_callback(window, button, action, mods):
 
 def cursor_pos_callback(window, xpos, ypos):
     state = glfw.get_window_user_pointer(window)
-    ypos = state.window_height - ypos  # Convert to Skia coordinate
+    #ypos = state.window_height - ypos  # Convert to Skia coordinate
     if state.dragging and state.fRects:
         rect = state.fRects.pop()
         rect.fRight = xpos
