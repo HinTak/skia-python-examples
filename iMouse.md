@@ -106,3 +106,21 @@ Button down: iMouse.z and iMouse.w are positive, indicating the position where t
 Button up: iMouse.z and iMouse.w are negative, indicating the position where the button was released.
 No interaction: all zeros.
 This enables shaders to react to mouse presses, releases, and drags with full pixel precision!
+It seems I couldn't find specific information about how Shadertoy handles the iMouse uniform directly from the repository or documentation sources. However, I can explain based on general knowledge of Shadertoy.
+
+In Shadertoy, the iMouse uniform is a predefined variable provided to shaders. It is used to pass mouse interaction data to the shader. This uniform contains the following data packed into a 4-component vector (vec4):
+
+x-coordinate (iMouse.x): The x-coordinate of the mouse cursor in pixels.
+y-coordinate (iMouse.y): The y-coordinate of the mouse cursor in pixels.
+z-coordinate (iMouse.z): The x-coordinate of the mouse's last click position in pixels.
+w-coordinate (iMouse.w): The y-coordinate of the mouse's last click position in pixels.
+Behavior:
+If the mouse is not being interacted with (e.g., no movement or clicks), the values of iMouse.z and iMouse.w are set to 0.0.
+When the mouse is clicked, the coordinates of the click are recorded in iMouse.zw.
+Example Use Case:
+Shaders can use this uniform to create interactive visual effects. For instance:
+
+Determine areas of the screen being hovered over by the mouse.
+Generate animations or distortions based on mouse movements.
+React to mouse clicks by triggering visual changes at specific positions.
+If you need more precise details or examples, I would recommend checking out Shadertoy's official documentation or exploring shader examples that use the iMouse uniform. Let me know if you'd like further assistance!
