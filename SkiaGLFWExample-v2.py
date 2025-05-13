@@ -45,7 +45,7 @@ def mouse_button_callback(window, button, action, mods):
     state = glfw.get_window_user_pointer(window)
     if button == glfw.MOUSE_BUTTON_LEFT:
         x, y = glfw.get_cursor_pos(window)
-        y = state.window_height - y  # invert y for Skia canvas
+        #y = state.window_height - y  # REMOVE comment to invert y for Skia canvas
         if action == glfw.PRESS:
             rect = Rect.MakeLTRB(x, y, x, y)
             color = random.randint(0, 0xFFFFFFFF) | 0x44808080
@@ -59,7 +59,7 @@ def mouse_button_callback(window, button, action, mods):
 def cursor_pos_callback(window, xpos, ypos):
     state = glfw.get_window_user_pointer(window)
     if state.dragging and state.last_rect:
-        ypos = state.window_height - ypos  # invert y for Skia canvas
+        #ypos = state.window_height - ypos  # REMOVE comment to invert y for Skia canvas
         rect, color = state.fRects.pop()
         rect.fRight = xpos
         rect.fBottom = ypos
