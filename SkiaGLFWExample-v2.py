@@ -142,25 +142,37 @@ def main(argv):
     helpMessage = "Click and drag to create rects.  Press esc to quit."
     rotation = 0
 
+    # --- Track last framebuffer size and cached surface/target
+    last_fb_width = last_fb_height = None
+    cached_target = None
+    cached_surface = None
+
     while not glfw.window_should_close(window) and not state.fQuit:
         glfw.poll_events()
 
-        # Get framebuffer size every frame (handles resize)
         fb_width, fb_height = glfw.get_framebuffer_size(window)
         glViewport(0, 0, fb_width, fb_height)
         glClearColor(1, 1, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
 
-        target = GrBackendRenderTarget(
-            fb_width, fb_height, kMsaaSampleCount, kStencilBits, info
-        )
-        surface = Surface.MakeFromBackendRenderTarget(
-            grContext, target,
-            kBottomLeft_GrSurfaceOrigin,
-            colorType, None, None
-        )
-        assert surface is not None
-        canvas = surface.getCanvas()
+        # Only recreate if size has changed
+        if (fb_width != last_fb_width) or (fb_height != last_fb_height):
+            if cached_surface is not None:
+                del cached_surface
+            if cached_target is not None:
+                del cached_target
+            cached_target = GrBackendRenderTarget(
+                fb_width, fb_height, kMsaaSampleCount, kStencilBits, info
+            )
+            cached_surface = Surface.MakeFromBackendRenderTarget(
+                grContext, cached_target,
+                kBottomLeft_GrSurfaceOrigin,
+                colorType, None, None
+            )
+            assert cached_surface is not None
+            last_fb_width, last_fb_height = fb_width, fb_height
+
+        canvas = cached_surface.getCanvas()
 
         canvas.clear(ColorWHITE)
         paint.setColor(ColorBLACK)
