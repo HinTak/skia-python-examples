@@ -3,8 +3,10 @@
 #
 # Skia + wxPython example (ported from SkiaSDLExample.py)
 #
-# Copyright 2024 Hin-Tak Leung, wxPython port by Copilot
+# Copyright 2025 Hin-Tak Leung, wxPython port by Copilot
 # Distributed under the terms of the new BSD license.
+
+#     Known issue: Seems to have a buffer aliasing problem.
 
 import wx
 import random
