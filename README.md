@@ -4,6 +4,9 @@
 
 [![windows testing](https://github.com/HinTak/skia-python-examples/actions/workflows/windows.yml/badge.svg)](https://github.com/HinTak/skia-python-examples/actions/workflows/windows.yml)
 
+This repository contains examples demonstrating the use of Skia-Python, a Python binding for the Skia graphics library.
+If you're interested in learning or exploring Skia-Python, this repository offers practical examples to get started.
+
 On Wayland-based platforms (i.e. very new Linux systems), setting `SDL_VIDEODRIVER=x11`
 may be needed for the SDL example; the equivalent for the GLUT example is `PYOPENGL_PLATFORM=glx` (not needed on Fedora 40 Wayland).
 
