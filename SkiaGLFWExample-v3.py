@@ -3,7 +3,7 @@
 #
 #  Skia + GLFW example (based on SkiaSDLExample.py)
 #
-#  Copyright 2024 Hin-Tak Leung, adapted to GLFW by Copilot
+#  Copyright 2025 Hin-Tak Leung, adapted to GLFW by Copilot
 #  Distributed under the terms of the new BSD license.
 #
 #  You need: pip install glfw skia-python PyOpenGL
