@@ -3,7 +3,7 @@
 #
 #  Skia + GLFW example (ported from SDL2 version)
 #
-#  Copyright 2024 Hin-Tak Leung
+#  Copyright 2025 Hin-Tak Leung
 #  Distributed under the terms of the new BSD license.
 #
 #  This example requires:
