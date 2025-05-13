@@ -105,10 +105,17 @@ class SkiaPanel(wx.Panel):
         # Flush drawing
         canvas.flush()
 
-        # Transfer Skia image to wx.Bitmap and draw
-        wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, surface.readPixels(info).tobytes())
-        dc = wx.AutoBufferedPaintDC(self)
-        dc.DrawBitmap(wx_bmp, 0, 0)
+        # Extract pixel data safely using peekPixels
+        pixmap = surface.peekPixels()
+        if pixmap is not None:
+            buffer = memoryview(pixmap.addr()).tobytes()  # Get raw RGBA bytes
+            wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, buffer)
+            dc = wx.AutoBufferedPaintDC(self)
+            dc.DrawBitmap(wx_bmp, 0, 0)
+        else:
+            # Fallback: blank
+            dc = wx.AutoBufferedPaintDC(self)
+            dc.Clear()
 
         # Schedule next frame for animation
         self.Refresh(False)
