@@ -105,15 +105,13 @@ class SkiaPanel(wx.Panel):
         # Flush drawing
         canvas.flush()
 
-        # Extract pixel data safely using peekPixels
-        pixmap = surface.peekPixels()
-        if pixmap is not None:
-            buffer = memoryview(pixmap.addr()).tobytes()  # Get raw RGBA bytes
-            wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, buffer)
+        # Correct pixel extraction for wx.Bitmap
+        arr = surface.readPixels()
+        if arr is not None:
+            wx_bmp = wx.Bitmap.FromBufferRGBA(w, h, arr.tobytes())
             dc = wx.AutoBufferedPaintDC(self)
             dc.DrawBitmap(wx_bmp, 0, 0)
         else:
-            # Fallback: blank
             dc = wx.AutoBufferedPaintDC(self)
             dc.Clear()
 
