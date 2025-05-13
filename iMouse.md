@@ -78,3 +78,31 @@ Practical Reference
 You can find shaders demonstrating this behavior by searching for interactive ShaderToy examples (e.g., shaders that use dragging or click-release mechanics). For example, searching for shaders that check iMouse.z < 0.0 or iMouse.w < 0.0 will lead you to examples where the negative values of iMouse.zw are explicitly handled.
 
 If you'd like, I can help you search for ShaderToy examples or shaders that document this behavior in their comments!
+Behavior Details
+1. Idle (No Button Pressed)
+iMouse.x and iMouse.y are the current mouse position (if over the shader viewport), otherwise they are zero.
+iMouse.z and iMouse.w are zero, unless the mouse was previously pressed and released (see below).
+2. Button Pressed
+iMouse.x and iMouse.y: Current mouse position (pixels).
+iMouse.z and iMouse.w: Mouse position where the button was pressed (pixels, stays constant while pressed).
+3. Button Released
+When the mouse button is released, iMouse.z and iMouse.w are set to the negative values of the position where the button was released.
+This tells your shader that a release event happened.
+iMouse.x and iMouse.y stay at the current position (if the mouse is still over the viewport; otherwise, zero).
+4. No Interaction / Mouse Outside Viewport
+All values are zero.
+https://www.shadertoy.com/faq - ShaderToy FAQ: How do I use mouse input in a shader?
+https://www.shadertoy.com/view/ltKXzr ShaderToy Forum: iMouse uniform details
+https://www.shadertoy.com/view/XsB3zH Example shader using iMouse release detection (search for iMouse.z < 0.0)
+Summary Table
+State	iMouse.x/y	iMouse.z/w
+Idle	Current location	0, 0
+Button Pressed	Current location	Press location (const)
+Button Released	Current location	-Release location (negative)
+Outside/No activity	0, 0	0, 0
+In short:
+
+Button down: iMouse.z and iMouse.w are positive, indicating the position where the button was pressed.
+Button up: iMouse.z and iMouse.w are negative, indicating the position where the button was released.
+No interaction: all zeros.
+This enables shaders to react to mouse presses, releases, and drags with full pixel precision!
