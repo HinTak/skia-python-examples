@@ -1,3 +1,5 @@
+# This seems to be working okay except for resizing.
+
 import glfw
 from OpenGL.GL import *
 import skia
