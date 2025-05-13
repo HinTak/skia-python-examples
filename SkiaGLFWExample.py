@@ -106,7 +106,7 @@ def main():
         # Mouse input
         lmb_down = glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS
         x, y = glfw.get_cursor_pos(window)
-        y = state.window_height - y  # invert y so origin is top-left
+        #y = state.window_height - y  # invert y so origin is top-left
 
         if lmb_down and not drawing:
             drawing = True
