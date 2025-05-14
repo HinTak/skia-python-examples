@@ -113,20 +113,20 @@ def main():
         if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             state.fQuit = True
 
-def on_window_size(window, w, h):
-    state.window_width = w
-    state.window_height = h
-    glViewport(0, 0, w, h)
+    def on_window_size(window, w, h):
+        state.window_width = w
+        state.window_height = h
+        glViewport(0, 0, w, h)
 
-    # Recreate Skia surface
-    global surface, canvas, grContext, target
-    grContext.reset()  # Reset the context to ensure no lingering states
-    target = GrBackendRenderTarget(w, h, kMsaaSampleCount, kStencilBits, GrGLFramebufferInfo(0, fFormat))
-    surface = Surface.MakeFromBackendRenderTarget(grContext, target, kBottomLeft_GrSurfaceOrigin, colorType, None, props)
-    if surface is None:
-        print("Failed to recreate Skia surface")
-        return
-    canvas = surface.getCanvas()
+        # Recreate Skia surface
+        global surface, canvas, grContext, target
+        grContext.reset()  # Reset the context to ensure no lingering states
+        target = GrBackendRenderTarget(w, h, kMsaaSampleCount, kStencilBits, GrGLFramebufferInfo(0, fFormat))
+        surface = Surface.MakeFromBackendRenderTarget(grContext, target, kBottomLeft_GrSurfaceOrigin, colorType, None, props)
+        if surface is None:
+            print("Failed to recreate Skia surface")
+            return
+        canvas = surface.getCanvas()
 
     glfw.set_mouse_button_callback(window, on_mouse_button)
     glfw.set_cursor_pos_callback(window, on_cursor_pos)
