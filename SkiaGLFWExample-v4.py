@@ -140,7 +140,7 @@ def main():
         # Draw help message
         paint.setColor(ColorBLACK)
         canvas.save()
-        canvas.translate(0, state.window_height - font.getSize())
+        canvas.translate(0, 0)
         canvas.drawString(helpMessage, 0, font.getSize(), font, paint)
         canvas.restore()
 
