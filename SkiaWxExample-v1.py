@@ -139,7 +139,7 @@ class SkiaPanel(wx.Panel):
         canvas.flush()
         image = surface.makeImageSnapshot()
         buf = image.tobytes()
-        bmp = wx.Bitmap.FromBuffer(width, height, buf)
+        bmp = wx.Bitmap.FromBufferRGBA(width, height, buf)
         dc = wx.PaintDC(self)
         dc.DrawBitmap(bmp, 0, 0)
 
