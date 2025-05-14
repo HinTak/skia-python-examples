@@ -12,6 +12,8 @@ class ApplicationState:
         self.window_width = width
         self.window_height = height
         self.fRects = []
+        self.surface = None
+        self.canvas = None
 
 def create_star():
     kNumPoints = 5
@@ -76,6 +78,8 @@ def main():
     canvas = surface.getCanvas()
 
     state = ApplicationState(scr_width, scr_height)
+    state.surface = surface
+    state.canvas = surface.getCanvas()
     helpMessage = "Click and drag to create rects.  Press esc to quit."
     paint = skia.Paint()
     font = skia.Font()
@@ -152,22 +156,22 @@ def main():
 
         # Draw help message
         paint.setColor(skia.ColorBLACK)
-        canvas.drawString(helpMessage, 0, font.getSize(), font, paint)
+        state.canvas.drawString(helpMessage, 0, font.getSize(), font, paint)
 
         # Draw rectangles
         for rect in state.fRects:
             paint.setColor(random.randint(0, 0xFFFFFFFF) | 0x44808080)
-            canvas.drawRect(rect, paint)
+            state.canvas.drawRect(rect, paint)
 
         # Draw spinning star image in center
-        canvas.save()
-        canvas.translate(state.window_width / 2.0, state.window_height / 2.0)
-        canvas.rotate(rotation)
+        state.canvas.save()
+        state.canvas.translate(state.window_width / 2.0, state.window_height / 2.0)
+        state.canvas.rotate(rotation)
         rotation += 1
-        canvas.drawImage(image, -50.0, -50.0)
-        canvas.restore()
+        state.canvas.drawImage(image, -50.0, -50.0)
+        state.canvas.restore()
 
-        canvas.flush()
+        state.canvas.flush()
         glfw.swap_buffers(window)
 
     glfw.destroy_window(window)
