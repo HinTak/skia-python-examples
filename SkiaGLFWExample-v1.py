@@ -93,27 +93,27 @@ def main():
     rect_start = (0, 0)
     rotation = 0
 
-def framebuffer_size_callback(window, width, height):
-    state.window_width, state.window_height = width, height
-    glViewport(0, 0, width, height)
+    def framebuffer_size_callback(window, width, height):
+        state.window_width, state.window_height = width, height
+        glViewport(0, 0, width, height)
 
-    # Recreate Skia render target for the new window size
-    info = skia.GrGLFramebufferInfo(0, GL_RGBA8)
-    kMsaaSampleCount = 0
-    kStencilBits = 8
-    target = skia.GrBackendRenderTarget(
-        width, height, kMsaaSampleCount, kStencilBits, info
-    )
-    props = skia.SurfaceProps(skia.SurfaceProps.kUseDeviceIndependentFonts_Flag,
-                             skia.PixelGeometry.kUnknown_PixelGeometry)
-    surface = skia.Surface.MakeFromBackendRenderTarget(
-        grContext, target,
-        skia.kBottomLeft_GrSurfaceOrigin,
-        skia.kRGBA_8888_ColorType, None, props
-    )
-    assert surface is not None
-    state.surface = surface
-    state.canvas = surface.getCanvas()
+        # Recreate Skia render target for the new window size
+        info = skia.GrGLFramebufferInfo(0, GL_RGBA8)
+        kMsaaSampleCount = 0
+        kStencilBits = 8
+        target = skia.GrBackendRenderTarget(
+            width, height, kMsaaSampleCount, kStencilBits, info
+        )
+        props = skia.SurfaceProps(skia.SurfaceProps.kUseDeviceIndependentFonts_Flag,
+                                 skia.PixelGeometry.kUnknown_PixelGeometry)
+        surface = skia.Surface.MakeFromBackendRenderTarget(
+            grContext, target,
+            skia.kBottomLeft_GrSurfaceOrigin,
+            skia.kRGBA_8888_ColorType, None, props
+        )
+        assert surface is not None
+        state.surface = surface
+        state.canvas = surface.getCanvas()
 
     glfw.set_framebuffer_size_callback(window, framebuffer_size_callback)
 
