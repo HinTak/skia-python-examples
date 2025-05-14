@@ -37,6 +37,7 @@ def create_star():
     return concavePath
 
 def main():
+    global surface, canvas, grContext, target, fFormat, colorType, props
     if not glfw.init():
         print("Failed to initialize GLFW")
         return 1
