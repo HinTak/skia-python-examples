@@ -1,4 +1,4 @@
-# This seems to be working okay except for resizing.
+# This seems to be working okay now.
 
 import glfw
 from OpenGL.GL import *
