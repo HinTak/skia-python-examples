@@ -118,7 +118,7 @@ def main():
         glViewport(0, 0, w, h)
 
         # Recreate Skia surface
-        nonlocal surface, canvas, grContext, target, fFormat, colorType, props
+        nonlocal surface, canvas, target
         target = GrBackendRenderTarget(w, h, kMsaaSampleCount, kStencilBits, GrGLFramebufferInfo(0, fFormat))
         surface = Surface.MakeFromBackendRenderTarget(grContext, target, kBottomLeft_GrSurfaceOrigin, colorType, None, props)
         if surface is None:
