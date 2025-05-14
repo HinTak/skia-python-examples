@@ -6,8 +6,6 @@
 # Copyright 2025 Hin-Tak Leung, wxPython port by Copilot
 # Distributed under the terms of the new BSD license.
 
-#     Known issue: Seems to have a buffer aliasing problem.
-
 import wx
 import random
 from skia import *
