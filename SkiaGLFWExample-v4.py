@@ -6,7 +6,7 @@
 #  Copyright 2025 Hin-Tak Leung
 #  Ported to GLFW by Copilot, 2025
 #
-#      Known problem: resizing, and message at bottom
+#      Known problem: message at bottom instead of top
 import glfw
 from OpenGL.GL import *
 from skia import *
