@@ -127,7 +127,7 @@ class SkiaTkApp:
         self.update_tk_canvas()
 
     def update_tk_canvas(self):
-        # Draw surface to Tkinter canvas via PhotoImage (PIL/Pillow bridge)
+        # Draw surface to Tkinter canvas via tk.PhotoImage (base64)
         # Skia to PNG bytes
         img = self.surface.makeImageSnapshot()
         png_bytes = img.encodeToData()
