@@ -131,20 +131,13 @@ class SkiaTkApp:
         # Skia to PNG bytes
         img = self.surface.makeImageSnapshot()
         png_bytes = img.encodeToData()
-        import io
-        from PIL import Image, ImageTk
-        pil_image = Image.open(io.BytesIO(bytes(png_bytes)))
-        self.tk_image = ImageTk.PhotoImage(pil_image)
+        import base64
+        self.tk_image = tk.PhotoImage(data=base64.b64encode(png_bytes.bytes()))
         self.canvas.delete("all")
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.tk_image)
 
 def main():
     import sys
-    try:
-        from PIL import Image, ImageTk
-    except ImportError:
-        print("Pillow is required for this example. Install with 'pip install pillow'")
-        sys.exit(1)
     root = tk.Tk()
     root.title("Skia + Tkinter Example")
     app = SkiaTkApp(root)
