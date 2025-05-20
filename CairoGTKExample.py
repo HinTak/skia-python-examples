@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#  Skia + GTK3 (PyGObject) example ported from SkiaSDLExample.py
+#  Cairo + GTK3 (PyGObject) example ported from SkiaSDLExample.py
 #
-#  Copyright 2024 Hin-Tak Leung
+#  Copyright 2025 Hin-Tak Leung
 #
 #  Ported to PyGTK3 by Copilot
+
+# This is the first response from Github Copilot backed by GPT-4.1 to
+#   "Can you port https://github.com/HinTak/skia-python-examples/blob/main/SkiaSDLExample.py to pygtk3 please?"
+#
+# It basically did a loose rewrite into GTK3 + Cairo. It mostly does
+# all the equivalent things, loosely, except it does not show
+# intermediate rectangles while one is dragging the mouse.
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -14,12 +21,6 @@ import cairo
 from collections import namedtuple
 import math
 import sys
-
-try:
-    from skia import ColorWHITE, ColorBLACK, Surface, Paint, Font, Rect, Path, Point
-    HAS_SKIA = True
-except ImportError:
-    HAS_SKIA = False
 
 RectState = namedtuple('RectState', ['left', 'top', 'right', 'bottom'])
 
@@ -34,7 +35,7 @@ class ApplicationState:
         self.rotation = 0
 
 def create_star_path(center_x, center_y, radius):
-    # Create a 5-pointed star path in Cairo (or Skia)
+    # Create a 5-pointed star path in Cairo
     path = []
     num_points = 5
     for i in range(num_points * 2):
@@ -45,9 +46,9 @@ def create_star_path(center_x, center_y, radius):
         path.append((x, y))
     return path
 
-class SkiaGTKExample(Gtk.Window):
+class CairoGTKExample(Gtk.Window):
     def __init__(self):
-        super().__init__(title="Skia GTK Example")
+        super().__init__(title="Cairo GTK Example")
         self.set_default_size(800, 600)
         self.state = ApplicationState(800, 600)
 
@@ -149,6 +150,6 @@ class SkiaGTKExample(Gtk.Window):
         self.drawing_area.queue_draw()
 
 if __name__ == "__main__":
-    win = SkiaGTKExample()
+    win = CairoGTKExample()
     win.show_all()
     Gtk.main()
