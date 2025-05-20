@@ -63,6 +63,9 @@ class SkiaGLArea(Gtk.GLArea):
         # Keyboard events
         self.key_controller = Gtk.EventControllerKey.new()
         self.key_controller.connect("key-pressed", self.on_key_press)
+        self.add_controller(self.motion_controller)
+        self.add_controller(self.click_gesture)
+        self.add_controller(self.key_controller)
         # --- End GTK4 event controller setup ---
 
         self.state = state
