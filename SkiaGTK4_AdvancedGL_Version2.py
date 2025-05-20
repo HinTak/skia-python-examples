@@ -184,16 +184,13 @@ class SkiaGLArea(Gtk.GLArea):
         # Draw animated runtime shader background if available
         if self.shader_effect:
             secs = time.time() - self.state.start_time
-            uniforms = {
-                "iResolution": (width, height),
-                "iTime": float(secs)
-            }
-            shader = self.shader_effect.makeShader(
-                uniforms, None, None
-            )
+            builder = skia.RuntimeShaderBuilder(self.shader_effect)
+            builder.setUniform("iResolution", [width, height])
+            builder.setUniform("iTime", float(secs))
+            shader = builder.makeShader()
             paint.setShader(shader)
             canvas.drawRect(skia.Rect.MakeWH(width, height), paint)
-            paint.setShader(None)
+            paint.reset()
         # Draw help text at top-left
         paint.setColor(skia.ColorBLACK)
         canvas.drawString(HELP_MESSAGE, 0, font.getSize(), font, paint)
@@ -211,7 +208,7 @@ class SkiaGLArea(Gtk.GLArea):
         if self.star_image:
             blur_paint = skia.Paint()
             blur_paint.setImageFilter(self.blur_filter)
-            canvas.drawImage(self.star_image, -self.star_width/2, -self.star_height/2, blur_paint)
+            canvas.drawImage(self.star_image, -self.star_width/2, -self.star_height/2, skia.SamplingOptions(), blur_paint)
         canvas.restore()
         canvas.flush()
         self.gr_context.flush()
