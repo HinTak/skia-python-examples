@@ -52,16 +52,16 @@ class SkiaGLArea(Gtk.GLArea):
 
         # --- Begin GTK4 event controller setup (replacement for lines 52-61) ---
         # Mouse motion events
-        self.motion_controller = Gtk.EventControllerMotion.new(self)
+        self.motion_controller = Gtk.EventControllerMotion.new()
         self.motion_controller.connect("motion", self.on_motion_notify)
 
         # Mouse press/release (click) events
-        self.click_gesture = Gtk.GestureClick.new(self)
+        self.click_gesture = Gtk.GestureClick.new()
         self.click_gesture.connect("pressed", self.on_button_press)
         self.click_gesture.connect("released", self.on_button_release)
 
         # Keyboard events
-        self.key_controller = Gtk.EventControllerKey.new(self)
+        self.key_controller = Gtk.EventControllerKey.new()
         self.key_controller.connect("key-pressed", self.on_key_press)
         # --- End GTK4 event controller setup ---
 
