@@ -83,7 +83,6 @@ class SkiaGLArea(Gtk.GLArea):
         info = skia.ImageInfo.Make(self.star_width, self.star_height, skia.ColorType.kRGBA_8888_ColorType, skia.AlphaType.kPremul_AlphaType)
         star_surface = skia.Surface.MakeRaster(info)
         canvas = star_surface.getCanvas()
-        canvas.clear(skia.ColorWHITE)
         paint = skia.Paint()
         canvas.save()
         canvas.translate(self.star_width/2, self.star_height/2)
