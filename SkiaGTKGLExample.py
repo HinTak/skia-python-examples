@@ -71,7 +71,6 @@ class SkiaGLArea(Gtk.GLArea):
         # Draw star to an image so we can rotate/translate it efficiently
         surface = Surface.MakeRasterN32Premul(100, 100)
         canvas = surface.getCanvas()
-        canvas.clear(ColorWHITE)
         paint = Paint()
         canvas.save()
         canvas.translate(50, 50)
