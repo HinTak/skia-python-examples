@@ -38,7 +38,7 @@ class SkiaGLArea(Gtk.GLArea):
         self.set_has_depth_buffer(False)
         self.set_has_stencil_buffer(True)
         self.set_auto_render(True)
-        self.set_required_version(3, 0)
+        self.set_required_version(3, 2)
         self.connect("realize", self.on_realize)
         self.connect("render", self.on_render)
         self.connect("resize", self.on_resize)
