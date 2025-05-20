@@ -121,7 +121,7 @@ class SkiaGLArea(Gtk.GLArea):
             backend_render_target = skia.GrBackendRenderTarget(
                 width, height, msaa, stencil, fb_info
             )
-            props = skia.SurfaceProps(skia.SurfaceProps.kUseDeviceIndependentFonts_Flag)
+            props = skia.SurfaceProps()
             self.surface = skia.Surface.MakeFromBackendRenderTarget(
                 self.gr_context,
                 backend_render_target,
