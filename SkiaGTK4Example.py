@@ -6,6 +6,8 @@
 #  Copyright 2024 Hin-Tak Leung, ported to GTK4 by Copilot
 #  Distributed under the terms of the new BSD license.
 
+# References see https://lazka.github.io/pgi-docs/Gtk-4.0/classes/EventController.html
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, GdkRGBA
