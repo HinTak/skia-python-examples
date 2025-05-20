@@ -37,7 +37,7 @@ class SkiaGLArea(Gtk.GLArea):
         super().__init__()
         self.set_has_depth_buffer(False)
         self.set_has_stencil_buffer(True)
-        self.set_auto_render(True)
+        self.set_auto_render(False)
         self.set_required_version(3, 2)
         self.connect("realize", self.on_realize)
         self.connect("render", self.on_render)
@@ -53,6 +53,9 @@ class SkiaGLArea(Gtk.GLArea):
         self.star_image = None
         self.helpMessage = "Click and drag to create rects.  Press esc to quit."
         self.drag_rect = None
+        self.animating = False
+        self._anim_timeout_id = None
+        self._needs_animation = False
 
     def on_realize(self, area):
         self.make_current()
@@ -61,7 +64,7 @@ class SkiaGLArea(Gtk.GLArea):
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
         self.grContext = GrDirectContext.MakeGL()
         self.star_image = self.make_offscreen_star()
-        GLib.timeout_add(16, self.queue_draw)  # ~60fps
+        # Do not start animation timer here
 
     def on_resize(self, area, width, height):
         self.state.window_width = width
@@ -77,6 +80,35 @@ class SkiaGLArea(Gtk.GLArea):
         canvas.drawPath(create_star(), paint)
         canvas.restore()
         return surface.makeImageSnapshot()
+
+    def start_animation(self):
+        if not self._anim_timeout_id:
+            self._anim_timeout_id = GLib.timeout_add(16, self.on_animation_frame)
+            self.animating = True
+
+    def stop_animation(self):
+        if self._anim_timeout_id:
+            GLib.source_remove(self._anim_timeout_id)
+            self._anim_timeout_id = None
+            self.animating = False
+
+    def on_animation_frame(self):
+        # Only rotate if needed (e.g., star is visible)
+        self.rotation = (self.rotation + 1) % 360
+        self.queue_draw()
+        if self._needs_animation:
+            return True  # keep running
+        else:
+            self.stop_animation()
+            return False
+
+    def queue_draw_with_animation(self, animation_needed=False):
+        self._needs_animation = animation_needed
+        if animation_needed:
+            self.start_animation()
+        else:
+            self.stop_animation()
+        self.queue_draw()
 
     def on_render(self, area, glctx):
         width = self.get_allocated_width()
@@ -114,11 +146,10 @@ class SkiaGLArea(Gtk.GLArea):
             paint.setColor(0x44808080)
             canvas.drawRect(self.drag_rect, paint)
 
-        # Draw rotating star in the center
+        # Draw rotating star in the center (animate only if visible)
         canvas.save()
         canvas.translate(width / 2.0, height / 2.0)
         canvas.rotate(self.rotation)
-        self.rotation = (self.rotation + 1) % 360
         canvas.drawImage(self.star_image, -50.0, -50.0)
         canvas.restore()
 
@@ -131,26 +162,32 @@ class SkiaGLArea(Gtk.GLArea):
             self.drag_start = (event.x, event.y)
             self.drag_rect = Rect.MakeLTRB(event.x, event.y, event.x, event.y)
             self.queue_draw()
+            # No animation for drag
 
     def do_motion_notify_event(self, event):
         if self.drag_rect:
             x0, y0 = self.drag_start
             self.drag_rect = Rect.MakeLTRB(x0, y0, event.x, event.y)
             self.queue_draw()
+            # No animation for drag
 
     def do_button_release_event(self, event):
         if event.button == 1 and self.drag_rect:
             self.state.fRects.append(self.drag_rect)
             self.drag_rect = None
             self.queue_draw()
+            # No animation for drag
 
     def do_key_press_event(self, event):
         if event.keyval == Gdk.KEY_Escape:
             Gtk.main_quit()
 
-    def queue_draw(self, *args):
-        super().queue_draw()
-        return True  # GLib.timeout_add expects a bool
+    def showEvent(self):
+        # Start animation only if window is shown and not minimized
+        self.queue_draw_with_animation(True)
+
+    def hideEvent(self):
+        self.queue_draw_with_animation(False)
 
 class SkiaGTKGLWindow(Gtk.Window):
     def __init__(self):
