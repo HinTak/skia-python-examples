@@ -130,6 +130,7 @@ class SkiaGLArea(Gtk.GLArea):
                 None,
                 props
             )
+        assert self.surface != None
 
     def on_tick(self):
         self.state.rotation = (self.state.rotation + 1) % 360
