@@ -13,6 +13,7 @@ class ApplicationState:
         self.fRects = []
         self.drag_rect = None
         self.rotation = 0
+        self.animating = False
 
 def create_star():
     kNumPoints = 5
@@ -50,11 +51,14 @@ class SkiaTkApp:
         self.canvas.bind("<ButtonRelease-1>", self.on_mouse_up)
         self.root.bind("<Escape>", self.quit)
         self.root.bind("<Configure>", self.on_resize)
+        self.root.bind('<FocusIn>', self.on_focus_in)
+        self.root.bind('<FocusOut>', self.on_focus_out)
+        self.tk_image = None
+        self.animation_id = None
+        self.is_focused = True
         self.draw()
-        self.root.after(16, self.animate)
 
     def make_star_image(self):
-        # Make a star image to rotate
         img_surface = Surface(100, 100)
         c = img_surface.getCanvas()
         c.clear(ColorTRANSPARENT)
@@ -66,12 +70,11 @@ class SkiaTkApp:
         return img_surface.makeImageSnapshot()
 
     def on_mouse_down(self, event):
-        # Start new rectangle
         self.state.drag_rect = Rect.MakeLTRB(event.x, event.y, event.x, event.y)
         self.state.fRects.append(self.state.drag_rect)
+        self.draw()
 
     def on_mouse_drag(self, event):
-        # Update the rectangle being dragged
         if self.state.drag_rect:
             self.state.drag_rect.fRight = event.x
             self.state.drag_rect.fBottom = event.y
@@ -83,6 +86,7 @@ class SkiaTkApp:
 
     def quit(self, event=None):
         self.state.fQuit = True
+        self.stop_animation()
         self.root.destroy()
 
     def on_resize(self, event):
@@ -94,11 +98,32 @@ class SkiaTkApp:
             self.skcanvas = self.surface.getCanvas()
             self.draw()
 
+    def on_focus_in(self, event):
+        self.is_focused = True
+        self.start_animation()
+
+    def on_focus_out(self, event):
+        self.is_focused = False
+        self.stop_animation()
+
+    def start_animation(self):
+        if self.animation_id is None and self.is_focused:
+            self.animation_id = self.root.after(16, self.animate)
+            self.state.animating = True
+
+    def stop_animation(self):
+        if self.animation_id is not None:
+            self.root.after_cancel(self.animation_id)
+            self.animation_id = None
+        self.state.animating = False
+
     def animate(self):
-        if not self.state.fQuit:
+        if not self.state.fQuit and self.is_focused:
             self.state.rotation = (self.state.rotation + 1) % 360
             self.draw()
-            self.root.after(16, self.animate)
+            self.animation_id = self.root.after(16, self.animate)
+        else:
+            self.stop_animation()
 
     def draw(self):
         # Clear
@@ -120,19 +145,20 @@ class SkiaTkApp:
         cy = self.state.window_height / 2
         self.skcanvas.translate(cx, cy)
         self.skcanvas.rotate(self.state.rotation)
-        # Center the star image
         self.skcanvas.drawImage(self.star_image, -50, -50)
         self.skcanvas.restore()
         # Update tkinter canvas with Skia output
         self.update_tk_canvas()
 
     def update_tk_canvas(self):
-        # Draw surface to Tkinter canvas via tk.PhotoImage (base64)
-        # Skia to PNG bytes
         img = self.surface.makeImageSnapshot()
         png_bytes = img.encodeToData()
         import base64
-        self.tk_image = tk.PhotoImage(data=base64.b64encode(png_bytes.bytes()))
+        # Avoid creating a new PhotoImage unless necessary
+        b64data = base64.b64encode(png_bytes.bytes())
+        if not self.tk_image or getattr(self.tk_image, '_last_data', None) != b64data:
+            self.tk_image = tk.PhotoImage(data=b64data)
+            self.tk_image._last_data = b64data
         self.canvas.delete("all")
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.tk_image)
 
@@ -141,6 +167,7 @@ def main():
     root = tk.Tk()
     root.title("Skia + Tkinter Example")
     app = SkiaTkApp(root)
+    app.start_animation()
     root.mainloop()
 
 if __name__ == '__main__':
