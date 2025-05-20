@@ -113,6 +113,7 @@ class SkiaGLArea(Gtk.GLArea):
     def ensure_surface(self, width, height):
         if not self.gr_context:
             self.gr_context = skia.GrDirectContext.MakeGL()
+        assert self.gr_context != None
         if not self.surface or self.surface.width() != width or self.surface.height() != height:
             fb_id = GL.glGetIntegerv(GL.GL_FRAMEBUFFER_BINDING)
             stencil = 8
