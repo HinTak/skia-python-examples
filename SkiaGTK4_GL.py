@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Skia + Gtk4 + OpenGL (hardware accelerated) example
 
+# References see https://lazka.github.io/pgi-docs/Gtk-4.0/classes/GLArea.html
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, GLib
