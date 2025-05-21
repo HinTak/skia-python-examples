@@ -46,8 +46,7 @@ class SkiaGLWidget(QGLWidget):
     def _create_surface(self):
         # Called in initializeGL and resizeGL to (re)create the Skia surface
         w, h = self.width(), self.height()
-        #fb_id = self.defaultFramebufferObject()
-        fb_id = 0
+        fb_id = gl.glGetIntegerv(gl.GL_FRAMEBUFFER_BINDING)
         if w == 0 or h == 0:
             self.surface = None
             return
