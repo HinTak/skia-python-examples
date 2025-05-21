@@ -1,11 +1,11 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtOpenGL import QOpenGLWidget
+from PyQt5.QtOpenGL import QGLWidget
 import skia
 import OpenGL.GL as gl
 
-class SkiaGLWidget(QOpenGLWidget):
+class SkiaGLWidget(QGLWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMouseTracking(True)
@@ -16,7 +16,7 @@ class SkiaGLWidget(QOpenGLWidget):
 
     def initializeGL(self):
         # Set up Skia with the current OpenGL context
-        interface = skia.GrGLMakeNativeInterface()
+        interface = skia.GrGLInterface()
         self.gr_context = skia.GrDirectContext.MakeGL(interface)
         self._create_surface()
 
@@ -46,7 +46,8 @@ class SkiaGLWidget(QOpenGLWidget):
     def _create_surface(self):
         # Called in initializeGL and resizeGL to (re)create the Skia surface
         w, h = self.width(), self.height()
-        fb_id = self.defaultFramebufferObject()
+        #fb_id = self.defaultFramebufferObject()
+        fb_id = 0
         if w == 0 or h == 0:
             self.surface = None
             return
