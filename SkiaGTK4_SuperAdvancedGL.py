@@ -131,7 +131,10 @@ class SkiaGLArea(Gtk.GLArea):
         # Compose a complex filter: blur + drop shadow + color
         blur = skia.ImageFilters.Blur(3, 3)
         shadow = skia.ImageFilters.DropShadow(8, 8, 12, 12, skia.ColorBLUE)
-        color = skia.ImageFilters.ColorFilter(skia.TableColorFilter.MakeARGB([0,128,255,255]))
+        color = skia.ImageFilters.ColorFilter(skia.TableColorFilter.MakeARGB(None,
+                                                                             [num for elem in [[x,x] for x in range(128)] for num in elem],
+                                                                             range(256),
+                                                                             range(256)))
         self.complex_filter = skia.ImageFilters.Compose(color, skia.ImageFilters.Compose(blur, shadow))
 
     def ensure_surface(self, width, height):
@@ -253,8 +256,8 @@ class SkiaGLArea(Gtk.GLArea):
         circle.addCircle(width/2, height*0.8, 100)
         paint = skia.Paint()
         paint.setColor(skia.ColorRED)
-        font = skia.Font(size=32)
-        canvas.drawTextOnPath("Skia on GPU + GTK4!", circle, None, font, paint)
+        font = skia.Font(skia.Typeface(""), 32)
+        canvas.drawSimpleText("Skia on GPU + GTK4!", width/2, height*0.8, font, paint)
 
         canvas.flush()
         self.gr_context.flush()
