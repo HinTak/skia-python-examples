@@ -21,6 +21,7 @@ from sdl2 import *
 from sdl2.video import *
 from ctypes import byref, c_int
 from OpenGL.GL import glViewport, glClearColor, glClearStencil, glClear, GL_COLOR_BUFFER_BIT, GL_STENCIL_BUFFER_BIT, GL_RGBA8
+from OpenGL.GL import glGetIntegerv, GL_FRAMEBUFFER_BINDING
 import sys
 if not sys.platform.startswith("win"):
     from OpenGL.GLES2.EXT.texture_storage import GL_BGRA8_EXT
@@ -156,7 +157,9 @@ def main(argv):
     ##// render to it
     ##GrGLint buffer;
     ##GR_GL_GetIntegerv(interface.get(), GR_GL_FRAMEBUFFER_BINDING, &buffer);
-    ## glGetIntegerv
+
+    ## We don't bind Skia's GR_GL_GetIntegerv, but we can use GL's own glGetIntegerv directly:
+    fb_id = glGetIntegerv(GL_FRAMEBUFFER_BINDING)
 
     ## TODO: the windowFormat is never any of these?
     if SDL_PIXELFORMAT_RGBA8888 == windowFormat:
@@ -169,7 +172,7 @@ def main(argv):
         else:
             fFormat = GL_RGBA8
 
-    info = GrGLFramebufferInfo(0, fFormat)
+    info = GrGLFramebufferInfo(fb_id, fFormat)
 
     target = GrBackendRenderTarget(dw.value, dh.value, kMsaaSampleCount, kStencilBits, info)
 
