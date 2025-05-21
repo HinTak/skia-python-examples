@@ -49,16 +49,24 @@ class SkiaGLArea(Gtk.GLArea):
         self.connect("render", self.on_render)
         self.connect("resize", self.on_resize)
         self.set_focusable(True)
-        self.add_events(
-            Gdk.EventMask.BUTTON_PRESS_MASK |
-            Gdk.EventMask.BUTTON_RELEASE_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.KEY_PRESS_MASK
-        )
-        self.connect("button-press-event", self.on_button_press)
-        self.connect("button-release-event", self.on_button_release)
-        self.connect("motion-notify-event", self.on_motion_notify)
-        self.connect("key-press-event", self.on_key_press)
+
+        # --- Begin GTK4 event controller setup ---
+        # Mouse motion events
+        self.motion_controller = Gtk.EventControllerMotion.new()
+        self.motion_controller.connect("motion", self.on_motion_notify)
+
+        # Mouse press/release (click) events
+        self.click_gesture = Gtk.GestureClick.new()
+        self.click_gesture.connect("pressed", self.on_button_press)
+        self.click_gesture.connect("released", self.on_button_release)
+
+        # Keyboard events
+        self.key_controller = Gtk.EventControllerKey.new()
+        self.key_controller.connect("key-pressed", self.on_key_press)
+        self.add_controller(self.motion_controller)
+        self.add_controller(self.click_gesture)
+        self.add_controller(self.key_controller)
+        # --- End GTK4 event controller setup ---
 
         self.state = state
         self.gr_context = None
@@ -78,7 +86,6 @@ class SkiaGLArea(Gtk.GLArea):
         info = skia.ImageInfo.Make(self.star_width, self.star_height, skia.ColorType.kRGBA_8888_ColorType, skia.AlphaType.kPremul_AlphaType)
         star_surface = skia.Surface.MakeRaster(info)
         canvas = star_surface.getCanvas()
-        canvas.clear(skia.ColorWHITE)
         paint = skia.Paint()
         canvas.save()
         canvas.translate(self.star_width/2, self.star_height/2)
@@ -129,7 +136,7 @@ class SkiaGLArea(Gtk.GLArea):
 
     def ensure_surface(self, width, height):
         if not self.gr_context:
-            self.gr_context = skia.GrDirectContext.MakeGL()
+            self.gr_context = skia.GrDirectContext.MakeGL(skia.GrGLInterface.MakeEGL())
         if not self.surface or self.surface.width() != width or self.surface.height() != height:
             fb_id = GL.glGetIntegerv(GL.GL_FRAMEBUFFER_BINDING)
             stencil = 8
@@ -138,7 +145,7 @@ class SkiaGLArea(Gtk.GLArea):
             backend_render_target = skia.GrBackendRenderTarget(
                 width, height, msaa, stencil, fb_info
             )
-            props = skia.SurfaceProps(skia.SurfaceProps.kUseDeviceIndependentFonts_Flag)
+            props = skia.SurfaceProps()
             self.surface = skia.Surface.MakeFromBackendRenderTarget(
                 self.gr_context,
                 backend_render_target,
@@ -158,30 +165,31 @@ class SkiaGLArea(Gtk.GLArea):
         self.state.window_height = height
         self.surface = None  # force recreate
 
-    def on_button_press(self, widget, event):
-        if event.button == Gdk.BUTTON_PRIMARY:
+    # --- Updated event handler signatures for GTK4 event controllers ---
+    def on_button_press(self, gesture, n_press, x, y):
+        # Only handle left mouse button (button 1)
+        if gesture.get_current_button() == Gdk.BUTTON_PRIMARY:
             self.state.drawing = True
-            x, y = event.x, event.y
             self.state.current_rect = skia.Rect.MakeLTRB(x, y, x, y)
             self.state.fRects.append(self.state.current_rect)
             self.grab_focus()
             self.queue_render()
 
-    def on_button_release(self, widget, event):
-        if event.button == Gdk.BUTTON_PRIMARY:
+    def on_button_release(self, gesture, n_press, x, y):
+        if gesture.get_current_button() == Gdk.BUTTON_PRIMARY:
             self.state.drawing = False
             self.state.current_rect = None
 
-    def on_motion_notify(self, widget, event):
+    def on_motion_notify(self, motion_controller, x, y):
         if self.state.drawing and self.state.current_rect:
             rect = self.state.fRects.pop()
-            rect.fRight = event.x
-            rect.fBottom = event.y
+            rect.fRight = x
+            rect.fBottom = y
             self.state.fRects.append(rect)
             self.queue_render()
 
-    def on_key_press(self, widget, event):
-        if event.keyval == Gdk.KEY_Escape:
+    def on_key_press(self, key_controller, keyval, keycode, state):
+        if keyval == Gdk.KEY_Escape:
             self.state.fQuit = True
             Gtk.Application.get_default().quit()
             return True
@@ -201,14 +209,13 @@ class SkiaGLArea(Gtk.GLArea):
         # Animated runtime shader background
         if self.shader_effect:
             secs = time.time() - self.state.start_time
-            uniforms = {
-                "iResolution": (width, height),
-                "iTime": float(secs)
-            }
-            shader = self.shader_effect.makeShader(uniforms, None, None)
+            builder = skia.RuntimeShaderBuilder(self.shader_effect)
+            builder.setUniform("iResolution", [width, height])
+            builder.setUniform("iTime", float(secs))
+            shader = builder.makeShader()
             paint.setShader(shader)
             canvas.drawRect(skia.Rect.MakeWH(width, height), paint)
-            paint.setShader(None)
+            paint.reset()
 
         # Help text
         paint.setColor(skia.ColorBLACK)
@@ -231,7 +238,7 @@ class SkiaGLArea(Gtk.GLArea):
         if self.star_image:
             filter_paint = skia.Paint()
             filter_paint.setImageFilter(self.complex_filter)
-            canvas.drawImage(self.star_image, -self.star_width/2, -self.star_height/2, filter_paint)
+            canvas.drawImage(self.star_image, -self.star_width/2, -self.star_height/2, skia.SamplingOptions(), filter_paint)
         canvas.restore()
 
         # Draw SVG if available
