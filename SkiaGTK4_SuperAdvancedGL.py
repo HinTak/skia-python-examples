@@ -123,9 +123,9 @@ class SkiaGLArea(Gtk.GLArea):
 
     def create_path_effects(self):
         # Compose a dash + discrete path effect
-        dash = skia.DashPathEffect([8, 4], 0)
-        discrete = skia.DiscretePathEffect(4, 2)
-        self.path_effect = skia.ComposePathEffect(discrete, dash)
+        dash = skia.DashPathEffect.Make([8, 4], 0)
+        discrete = skia.DiscretePathEffect.Make(4, 2)
+        self.path_effect = skia.PathEffect.MakeCompose(discrete, dash)
 
     def create_filters(self):
         # Compose a complex filter: blur + drop shadow + color
