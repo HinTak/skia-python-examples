@@ -1,11 +1,18 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtOpenGL import QGLWidget
+
+# QOpenGLWidget is available from Qt 5.4 onward, and preferred.
+from PyQt5.QtCore import QT_VERSION
+if (QT_VERSION >= 0x050400):
+    from PyQt5.QtWidgets import QOpenGLWidget
+else:
+    from PyQt5.QtOpenGL import QGLWidget as QOpenGLWidget
+
 import skia
 import OpenGL.GL as gl
 
-class SkiaGLWidget(QGLWidget):
+class SkiaGLWidget(QOpenGLWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMouseTracking(True)
