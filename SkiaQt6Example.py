@@ -16,6 +16,7 @@ import random
 from PyQt6 import QtWidgets, QtCore, QtGui, QtOpenGL
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+from PyQt6.QtGui import QOpenGLContext
 from OpenGL.GL import *
 from skia import *
 
@@ -73,18 +74,26 @@ class SkiaQOpenGLWidget(QOpenGLWidget):
         offscreen = cpuSurface.getCanvas()
         offscreen.save()
         offscreen.translate(50.0, 50.0)
-        offscreen.drawPath(create_star(), self.paint)
+        offscreen.drawPath(create_star(), Paint())
         offscreen.restore()
+        offscreen.flush()
+        cpuSurface.flushAndSubmit()
         self.star_image = cpuSurface.makeImageSnapshot()
 
     def resizeGL(self, w, h):
+        if (self.grContext is None):
+            return
         self.state.window_width = w
         self.state.window_height = h
         glViewport(0, 0, w, h)
         # Re-create Skia backend surface for the new size
+        ctx = QOpenGLContext.currentContext()
+        fmt = ctx.format()
+        print(fmt.profile())
+        print(fmt.majorVersion(), fmt.minorVersion())
         kStencilBits = 8
         kMsaaSampleCount = 0
-        info = GrGLFramebufferInfo(0, GL_RGBA8)
+        info = GrGLFramebufferInfo(self.defaultFramebufferObject(), GL_RGBA8)
         target = GrBackendRenderTarget(w, h, kMsaaSampleCount, kStencilBits, info)
         props = SurfaceProps(SurfaceProps.kUseDeviceIndependentFonts_Flag, PixelGeometry.kUnknown_PixelGeometry)
         self.surface = Surface.MakeFromBackendRenderTarget(
@@ -94,6 +103,8 @@ class SkiaQOpenGLWidget(QOpenGLWidget):
         assert self.surface is not None
 
     def paintGL(self):
+        if (self.surface is None):
+            return
         canvas = self.surface.getCanvas()
         w, h = self.state.window_width, self.state.window_height
         canvas.clear(ColorWHITE)
@@ -110,9 +121,12 @@ class SkiaQOpenGLWidget(QOpenGLWidget):
         canvas.translate(w / 2.0, h / 2.0)
         canvas.rotate(self.rotation)
         self.rotation += 1
-        canvas.drawImage(self.star_image, -50.0, -50.0)
+        self.paint.setColor(ColorBLACK)
+        canvas.drawPath(create_star(), self.paint)
+        #canvas.drawImage(self.star_image, -50.0, -50.0)
         canvas.restore()
         canvas.flush()
+        self.surface.flushAndSubmit()
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
