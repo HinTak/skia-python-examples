@@ -170,6 +170,8 @@ class SkiaGLArea(Gtk.GLArea):
         canvas.save()
         canvas.translate(self.state.window_width/2, self.state.window_height/2)
         canvas.rotate(self.state.rotation)
+        #paint.setColor(skia.ColorBLACK)
+        #canvas.drawPath(create_star(), paint)
         if self.star_image:
             canvas.drawImage(self.star_image, -self.star_width/2, -self.star_height/2)
         canvas.restore()
