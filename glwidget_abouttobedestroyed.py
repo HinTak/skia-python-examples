@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtOpenGL import QGLWidget
-from PyQt5.QtCore import pyqtSlot
+from PyQt4.QtGui import QApplication, QMainWindow
+from PyQt4.QtOpenGL import QGLWidget
+from PyQt4.QtCore import pyqtSlot
 import sys
 
 class MyOpenGLWidget(QGLWidget):
