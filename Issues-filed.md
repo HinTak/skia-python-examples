@@ -9,3 +9,6 @@ ENH: Provide Windows 11 ARM64 wheels (#22530)
 
 https://github.com/libsdl-org/sdl2-compat/issues/475
 Windows sizing events are incompatible with sdl2
+
+https://bugreports.qt.io/browse/QTBUG-137158
+[Regression] Qt6's QOpenGLWidget crashes when interacting with Skia's CPU raster
