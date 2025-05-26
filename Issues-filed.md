@@ -12,3 +12,5 @@ Windows sizing events are incompatible with sdl2
 
 https://bugreports.qt.io/browse/QTBUG-137158
 [Regression] Qt6's QOpenGLWidget crashes when interacting with Skia's CPU raster
+
+https://issues.skia.org/420271794 arm64 windows: target_cpu="arm64" conflicts with skia_use_freetype=true
