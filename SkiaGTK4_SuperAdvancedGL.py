@@ -119,7 +119,8 @@ class SkiaGLArea(Gtk.GLArea):
             import os
             svg_path = os.path.join(os.path.dirname(__file__), "skia-logo.svg")
             if os.path.exists(svg_path):
-                self.svg_picture = skia.SVGDOM.MakeFromFile(svg_path).getPicture()
+                svgstream = skia.Stream.MakeFromFile(svg_path)
+                self.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
         except Exception as e:
             self.svg_picture = None
 
@@ -249,8 +250,9 @@ class SkiaGLArea(Gtk.GLArea):
         # Draw SVG if available
         if self.svg_picture:
             canvas.save()
-            canvas.scale(0.2, 0.2)
-            canvas.drawPicture(self.svg_picture)
+            canvas.translate(width * 0.1, height * 0.1)
+            canvas.scale(0.4, 0.4)
+            self.svg_picture.render(canvas)
             canvas.restore()
 
         # Draw text on path (circle)
