@@ -6,13 +6,14 @@
 # SDL2 + SkSL
 
 # Multiple examples from https://shaders.skia.org/
-# Requires at least skia-python v132.b11
+# Requires at least skia-python v138
 
 from sdl2 import *
 import skia
 from skia import Paint, Rect, Font, Typeface, ColorWHITE
 from OpenGL import GL
 import ctypes
+import time
 
 width, height = 512, 512
 title = b"Skia + PySDL2 + SkSL Example"
@@ -25,7 +26,6 @@ title = b"Skia + PySDL2 + SkSL Example"
 SkSL_code = [ """
 // Source: @notargs https://twitter.com/notargs/status/1250468645030858753
 float f(vec3 p) {
-    float iTime = float(iStep) / 1000.0;
     p.z -= iTime * 10.;
     float a = p.z * .1;
     p.xy *= mat2(cos(a), sin(a), -sin(a), cos(a));
@@ -66,7 +66,6 @@ mat3 rotate3D(float angle, vec3 axis){
 }
 
 half4 main(float2 FC) {
-  float iTime = float(iStep) / 1000.0;
   vec4 o = vec4(0);
   vec2 r = iResolution.xy;
   vec3 v = vec3(1,3,7), p = vec3(0);
@@ -132,7 +131,6 @@ float fbm(vec2 n) {
 // -----------------------------------------------
 
 half4 main(in vec2 fragCoord ) {
-    float iTime = float(iStep) / 1000.0;
     vec2 p = fragCoord.xy / iResolution.xy;
 	vec2 uv = p*vec2(iResolution.x/iResolution.y,1.0);    
     float time = iTime * speed;
@@ -204,7 +202,6 @@ half4 main(in vec2 fragCoord ) {
 """
 // Source: @XorDev https://twitter.com/XorDev/status/1475524322785640455
 vec4 main(vec2 FC) {
-  float iTime = float(iStep) / 1000.0;
   vec4 o = vec4(0);
   vec2 p = vec2(0), c=p, u=FC.xy*2.-iResolution.xy;
   float a;
@@ -233,7 +230,6 @@ float julia(vec2 uv, vec2 c) {
 
 vec4 main( in vec2 fragCoord )
 {
-    float iTime = float(iStep) / 1000.0;
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = -1.0 + 2.0 * fragCoord / iResolution.xy;
 
@@ -258,7 +254,6 @@ vec3 hsv(float h, float s, float v){
 }
 
 vec4 main(vec2 FC) {
-  float iTime = float(iStep) / 1000.0;
   float e=0,R=0,t=iTime,s;
   vec2 r = iResolution.xy;
   vec3 q=vec3(0,0,-1), p, d=vec3((FC.xy-.5*r)/r.y,.7);
@@ -287,15 +282,15 @@ def setBuilder():
     input = current_index % len(SkSL_code)
     from skia import RuntimeEffect, RuntimeShaderBuilder
     header = """
-uniform int iStep;
+uniform float iTime;
 float3 iResolution = float3(512, 512, 512);
 """
     litEffect = RuntimeEffect.MakeForShader(header + SkSL_code[input])
     builder = RuntimeShaderBuilder(litEffect)
 
-def draw(canvas, step):
+def draw(canvas, timenow):
     global builder
-    builder.setUniform("iStep", step)
+    builder.setUniform("iTime", timenow)
     paint = Paint()
     paint.setShader(builder.makeShader())
     canvas.drawRect(Rect(0,0,512,512), paint)
@@ -368,6 +363,7 @@ def main():
     font = Font(Typeface("Roman"))
     paintWHITE = Paint()
     paintWHITE.setColor(ColorWHITE)
+    initial_time = time.time()
 
     while running:
         while SDL_PollEvent(event):
@@ -388,7 +384,7 @@ def main():
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT)
         
         with surface as canvas:
-            draw(canvas, step)
+            draw(canvas, time.time() - initial_time)
             canvas.drawString("Click to cycle through the examples", 0, font.getSize(), font, paintWHITE)
         step += 10 # arbitrary to look dynamic
         surface.flushAndSubmit()
