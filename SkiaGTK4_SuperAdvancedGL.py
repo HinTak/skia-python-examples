@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Skia + Gtk4 + OpenGL (super advanced GPU features demo)
 
+# This requires skia-python m138 (canvas.drawTextOnPath)
+
 import gi
 gi.require_version("Gtk", "4.0")
 from gi.repository import Gtk, Gdk, GLib
@@ -253,11 +255,11 @@ class SkiaGLArea(Gtk.GLArea):
 
         # Draw text on path (circle)
         circle = skia.Path()
-        circle.addCircle(width/2, height*0.8, 100)
+        circle.addCircle(width/2, height*0.5, 100)
         paint = skia.Paint()
         paint.setColor(skia.ColorRED)
         font = skia.Font(skia.Typeface(""), 32)
-        canvas.drawSimpleText("Skia on GPU + GTK4!", width/2, height*0.8, font, paint)
+        canvas.drawTextOnPath("Skia on GPU + GTK4!", circle, None, font, paint)
 
         canvas.flush()
         self.gr_context.flush()
