@@ -18,6 +18,11 @@ Note on Linux, it is highly sensitive to locale, and you might need to unset `LA
 
 `SkSL_ShaderMulti+SDL2.py` is a port of the animation on https://shaders.skia.org/ . Run it with a number argument (0 to 6) for the 7 examples on https://shaders.skia.org/ .
 
+`draw_text_on_path.py` is a simple demo, requiring skia-python m138, to draw text on a curve. The main part of functionality was
+removed in skia m70, but SkiaSharp decided to add it back.
+
+![original](figures/morphed_text.png)
+
 ## SkSL examples
 
 original:
