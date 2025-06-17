@@ -38,7 +38,7 @@ def blur_surface(surface, radius):
     blur_filter = skia.ImageFilters.Blur(radius, radius)
     paint = skia.Paint(ImageFilter=blur_filter)
     blur_surface = skia.Surface(surface.width(), surface.height())
-    blur_surface.getCanvas().drawImage(img, 0, 0, paint)
+    blur_surface.getCanvas().drawImage(img, 0, 0, skia.SamplingOptions(), paint)
     return blur_surface.makeImageSnapshot()
 
 class GlassMorphismWidget(QWidget):
