@@ -48,7 +48,7 @@ class GlassMorphismWidget(QWidget):
         self.resize(480, 340)
 
         # Load a sample background image (replace with your own if desired)
-        self.bg_arr = np.random.randint(0, 255, (320, 480, 3), np.uint8)
+        self.bg_arr = np.random.randint(0, 255, (320, 480, 4), np.uint8)
         self.bg_img = skia.Image.fromarray(self.bg_arr)
 
         self.blur_radius = 8.0
