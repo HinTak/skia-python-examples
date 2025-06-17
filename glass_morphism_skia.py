@@ -6,7 +6,7 @@ sksl = """
 uniform shader input_src;
 uniform float2 offset;
 uniform float2 size;
-uniform float blur_radius;
+const float blur_radius = 8.0;
 uniform float4 glass_color;
 uniform float glass_alpha;
 uniform float border_thickness;
@@ -61,7 +61,7 @@ rect = skia.Rect.MakeXYWH(150, 100, 300, 200)
 uniforms = {
     "offset": (rect.left(), rect.top()),
     "size": (rect.width(), rect.height()),
-    "blur_radius": 8.0,
+#    "blur_radius": 8.0,
     "glass_color": (1.0, 1.0, 1.0, 0.25),  # white, alpha 0.25
     "glass_alpha": 0.5,
     "border_thickness": 0.03,
