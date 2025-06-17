@@ -3,7 +3,7 @@ import numpy as np
 
 # Glassmorphism SkSL: blur + color overlay + border
 sksl = """
-uniform shader input;
+uniform shader input_src;
 uniform float2 offset;
 uniform float2 size;
 uniform float blur_radius;
@@ -22,7 +22,7 @@ half4 main(float2 p) {
     float count = 0.0;
     for (float x = -blur_radius; x <= blur_radius; x += 1.0) {
         for (float y = -blur_radius; y <= blur_radius; y += 1.0) {
-            c += input.eval(p + float2(x, y));
+            c += input_src.eval(p + float2(x, y));
             count += 1.0;
         }
     }
