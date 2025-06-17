@@ -62,7 +62,7 @@ class GlassMorphismWidget(QWidget):
         # 4. Compose: draw blurred area to a new surface
         glass_surface = skia.Surface(int(glass_rect.width()), int(glass_rect.height()))
         glass_canvas = glass_surface.getCanvas()
-        glass_canvas.drawImage(sub_img, 0, 0, blur_paint)
+        glass_canvas.drawImage(sub_img, 0, 0, skia.SamplingOptions(), blur_paint)
 
         # 5. Overlay white with adjustable opacity
         overlay = skia.Paint(
