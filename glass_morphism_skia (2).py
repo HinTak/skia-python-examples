@@ -67,7 +67,7 @@ class GlassMorphismWidget(QWidget):
         # 5. Overlay white with adjustable opacity
         overlay = skia.Paint(
             Color=skia.ColorWHITE,
-            AlphalF=self.opacity
+            Alphaf=self.opacity
         )
         glass_canvas.drawRect(skia.Rect.MakeWH(glass_rect.width(), glass_rect.height()), overlay)
 
