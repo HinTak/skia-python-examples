@@ -105,7 +105,7 @@ class GlassMorphismWidget(QWidget):
         blur_img = blur_surface(surface, self.blur_radius)
 
         # Create runtime effect for glass
-        effect = skia.RuntimeEffect.MakeForShader(GLASS_SHADER_SRC)[0]
+        effect = skia.RuntimeEffect.MakeForShader(GLASS_SHADER_SRC)
         shader = effect.makeShader(
             uniforms={
                 'image': blur_img.makeShader(),
