@@ -1,3 +1,5 @@
+# AI generated code, adjusted to work with skia-python m138.
+
 import sys
 import skia
 from PyQt5.QtWidgets import QApplication, QWidget
