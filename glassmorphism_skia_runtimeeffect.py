@@ -35,7 +35,7 @@ def np_to_qimage(arr):
 def blur_surface(surface, radius):
     """Apply a gaussian blur to the surface."""
     img = surface.makeImageSnapshot()
-    blur_filter = skia.ImageFilter.MakeBlur(radius, radius)
+    blur_filter = skia.ImageFilters.Blur(radius, radius)
     paint = skia.Paint(ImageFilter=blur_filter)
     blur_surface = skia.Surface(surface.width(), surface.height())
     blur_surface.getCanvas().drawImage(img, 0, 0, paint)
