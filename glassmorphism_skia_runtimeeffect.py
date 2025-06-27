@@ -106,14 +106,20 @@ class GlassMorphismWidget(QWidget):
 
         # Create runtime effect for glass
         effect = skia.RuntimeEffect.MakeForShader(GLASS_SHADER_SRC)
-        shader = effect.makeShader(
-            uniforms={
-                'image': blur_img.makeShader(),
-                'blur_size': (self.blur_radius, self.blur_radius),
-                'opacity': self.opacity,
-                'tint': tuple(self.tint),
-            }
-        )
+        builder = skia.RuntimeShaderBuilder(effect)
+        builder.setChild('image', blur_img.makeShader())
+        builder.setUniform('blur_size', (self.blur_radius, self.blur_radius))
+        builder.setUniform('opacity', self.opacity)
+        builder.setUniform('tint', tuple(self.tint))
+        shader = builder.makeShader()
+        #shader = effect.makeShader(
+        #    uniforms={
+        #        'image': blur_img.makeShader(),
+        #        'blur_size': (self.blur_radius, self.blur_radius),
+        #        'opacity': self.opacity,
+        #        'tint': tuple(self.tint),
+        #    }
+        #)
 
         paint = skia.Paint(Shader=shader)
         canvas.drawRect(rect, paint)
