@@ -71,7 +71,7 @@ class ShaderViewer:
         if not self.current_shader_code:
             return
         try:
-            self.shader_effect = skia.RuntimeEffect.Make(self.current_shader_code)
+            self.shader_effect = skia.RuntimeEffect.MakeForShader(self.current_shader_code)
             self.shader_builder = skia.RuntimeShaderBuilder(self.shader_effect)
             self.paint.setShader(self.shader_builder.makeShader())
             self.canvas.delete("all")
