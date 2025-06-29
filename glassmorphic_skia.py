@@ -84,7 +84,7 @@ def main():
 
     # --- Blur image for shader ---
     blurred_image = content_image.makeWithFilter(
-        skia.ImageFilter.MakeBlur(20.0, 20.0, skia.TileMode.kDecal), None)[0]
+        skia.ImageFilters.Blur(20.0, 20.0, skia.TileMode.kDecal), None)[0]
 
     # --- Noise image for shader ---
     noise_image = pil_noise_to_skimage(max(W, H))
