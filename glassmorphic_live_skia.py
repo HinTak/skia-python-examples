@@ -56,7 +56,7 @@ class GlassmorphicWidget(QWidget):
         self.resize(self.W, self.H)
         self.setMinimumSize(self.W, self.H)
         self.setMaximumSize(self.W, self.H)
-        self.effect = skia.RuntimeEffect.MakeForShader(GLASSMORPHIC_SKSL)[0]
+        self.effect = skia.RuntimeEffect.MakeForShader(GLASSMORPHIC_SKSL)
         self.noise_size = max(self.W, self.H)
         self.noise_image = pil_noise_to_skimage(self.noise_size)
         self.t = 0
