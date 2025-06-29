@@ -101,7 +101,7 @@ class GlassmorphicWidget(QWidget):
         # Prepare all Skia surfaces and shaders
         content_image = self.generate_content_image()
         blurred_image = content_image.makeWithFilter(
-            skia.ImageFilter.MakeBlur(20.0, 20.0, skia.TileMode.kDecal), None)[0]
+            skia.ImageFilters.Blur(20.0, 20.0, skia.TileMode.kDecal), None)[0]
 
         rect = skia.Rect.MakeLTRB(85, 110, 405, 290)
         uniforms = {
