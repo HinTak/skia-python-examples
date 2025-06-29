@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import sys
-import numpy as np
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide6.QtGui import QPainter, QLinearGradient, QColor, QPen, QBrush, QFont, QPainterPath
 from PySide6.QtCore import Qt, QRectF, QPointF
