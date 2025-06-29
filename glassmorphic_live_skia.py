@@ -44,8 +44,8 @@ vec4 main(vec2 coord) {
 """
 
 def pil_noise_to_skimage(size):
-    arr = (np.random.rand(size, size, 3) * 255).astype(np.uint8)
-    img = Image.fromarray(arr, 'RGB')
+    arr = (np.random.rand(size, size, 4) * 255).astype(np.uint8)
+    img = Image.fromarray(arr, 'RGBA')
     return skia.Image.fromarray(np.array(img))
 
 class GlassmorphicWidget(QWidget):
