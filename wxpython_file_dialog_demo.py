@@ -7,7 +7,7 @@ class FileDialogDemo(wx.Frame):
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
         
-        self.text = wx.TextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(400, 300))
+        self.text = wx.TextCtrl(panel, style=wx.TE_MULTILINE | wx.TE_READONLY, size=(600, 600))
         open_button = wx.Button(panel, label='Open File')
         open_button.Bind(wx.EVT_BUTTON, self.on_open_file)
         
@@ -17,7 +17,7 @@ class FileDialogDemo(wx.Frame):
         panel.SetSizer(vbox)
         self.SetTitle("wxPython File Dialog Demo")
         self.Centre()
-        self.SetSize((500, 400))
+        self.SetSize((600, 600))
 
     def on_open_file(self, event):
         with wx.FileDialog(self, "Open Text file", wildcard="Text files (*.txt)|*.txt|All files (*.*)|*.*",
