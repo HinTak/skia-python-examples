@@ -42,6 +42,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
 
         self.svg_picture = None
         self.svg_size = None
+        self.scale = 0
 
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
@@ -49,6 +50,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.Bind(wx.EVT_MOUSEWHEEL, self.on_mouse_wheel)
         self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
         # Do nothing, to avoid flashing on MSW.
         self.Bind(wx.EVT_ERASE_BACKGROUND, lambda x: None)
 
@@ -78,6 +80,16 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.on_draw()
 
         self.SwapBuffers()
+
+    def on_key_down(self, event):
+        keycode = event.GetKeyCode()
+        if (keycode == 43): # '+'
+            self.scale += 2
+            self.Refresh()
+        if (keycode == 45): # '-'
+            self.scale -= 2
+            self.Refresh()
+        event.Skip()
 
     def on_mouse_left_down(self, event):
         self.is_dragging = True
@@ -148,9 +160,11 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.canvas.translate(self.offset_x, self.offset_y)
 
         if self.svg_picture:
+            self.canvas.scale(1 + self.scale * 0.1, 1 + self.scale * 0.1)
             self.canvas.translate(-self.svg_size.width()/2, -self.svg_size.height()/2)
             self.svg_picture.render(self.canvas)
             self.canvas.translate(self.svg_size.width()/2, self.svg_size.height()/2)
+            self.canvas.scale(1/(1 + self.scale * 0.1), 1/(1 + self.scale * 0.1))
 
         self.canvas.restore()
         self.surface.flushAndSubmit()
