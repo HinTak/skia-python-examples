@@ -41,6 +41,7 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.zoom = 1.0
 
         self.svg_picture = None
+        self.svg_size = None
 
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
@@ -147,7 +148,9 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.canvas.translate(self.offset_x, self.offset_y)
 
         if self.svg_picture:
+            self.canvas.translate(-self.svg_size.width()/2, -self.svg_size.height()/2)
             self.svg_picture.render(self.canvas)
+            self.canvas.translate(self.svg_size.width()/2, self.svg_size.height()/2)
 
         self.canvas.restore()
         self.surface.flushAndSubmit()
@@ -195,6 +198,7 @@ class MainFrame(wx.Frame):
             try:
                 svgstream = skia.Stream.MakeFromFile(path)
                 self.canvas.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
+                self.canvas.svg_size = self.canvas.svg_picture.containerSize()
                 self.canvas.Refresh()
             except Exception as e:
                 wx.LogError(f"Cannot open file '{path}'.\n{str(e)}")
