@@ -41,8 +41,9 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.zoom = 1.0
 
         self.svg_picture = None
-        self.svg_size = None
-        self.scale = 0
+        self.img_size = None
+        self.img_scale_enum = 0
+        self.img_zoom = 1.0
 
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
@@ -83,11 +84,10 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
 
     def on_key_down(self, event):
         keycode = event.GetKeyCode()
-        if (keycode == 43): # '+'
-            self.scale += 2
-            self.Refresh()
-        if (keycode == 45): # '-'
-            self.scale -= 2
+        if ((keycode == 43) or # '+'
+            (keycode == 45)):  # '-'
+            self.img_scale_enum += (44 - keycode)
+            self.img_zoom = 1.2 ** self.img_scale_enum
             self.Refresh()
         event.Skip()
 
@@ -160,11 +160,11 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.canvas.translate(self.offset_x, self.offset_y)
 
         if self.svg_picture:
-            self.canvas.scale(1 + self.scale * 0.1, 1 + self.scale * 0.1)
-            self.canvas.translate(-self.svg_size.width()/2, -self.svg_size.height()/2)
+            self.canvas.scale(self.img_zoom, self.img_zoom)
+            self.canvas.translate(-self.img_size.width()/2, -self.img_size.height()/2)
             self.svg_picture.render(self.canvas)
-            self.canvas.translate(self.svg_size.width()/2, self.svg_size.height()/2)
-            self.canvas.scale(1/(1 + self.scale * 0.1), 1/(1 + self.scale * 0.1))
+            self.canvas.translate(self.img_size.width()/2, self.img_size.height()/2)
+            self.canvas.scale(1/self.img_zoom, 1/self.img_zoom)
 
         self.canvas.restore()
         self.surface.flushAndSubmit()
@@ -212,7 +212,7 @@ class MainFrame(wx.Frame):
             try:
                 svgstream = skia.Stream.MakeFromFile(path)
                 self.canvas.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
-                self.canvas.svg_size = self.canvas.svg_picture.containerSize()
+                self.canvas.img_size = self.canvas.svg_picture.containerSize()
                 self.canvas.Refresh()
                 self.canvas.SetFocus()
             except Exception as e:
