@@ -125,8 +125,16 @@ class SkiaCPUCanvas(wx.Panel):
 
         dcdim = min(self.Size.width, self.Size.height)
         if (self.svg_picture):
+            assert dc.CanUseTransformMatrix() == True
+            m = wx.AffineMatrix2D()
+            m.Translate(w / 2, h / 2)
+            m.Scale(self.zoom, self.zoom)
+            m.Translate(self.offset_x, self.offset_y)
+            m.Scale(self.img_zoom, self.img_zoom)
+            m.Translate(- self.svg_picture.width / 2 , - self.svg_picture.height / 2 )
+            dc.SetTransformMatrix(m)
             imgdim = min(self.svg_picture.width, self.svg_picture.height)
-            scale = dcdim / imgdim
+            scale = 1.0
             width = int(self.svg_picture.width * scale)
             height = int(self.svg_picture.height * scale)
 
