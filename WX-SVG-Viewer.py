@@ -14,7 +14,6 @@ import ctypes
 # pip imports
 import wx
 import wx.svg
-import skia
 
 
 """Enable high-res displays."""
@@ -25,8 +24,8 @@ except Exception:
     pass  # fail on non-windows
 
 
-class SkiaCPUCanvas(wx.Panel):
-    """A cpu based skia canvas"""
+class CPUCanvas(wx.Panel):
+    """A cpu based canvas"""
 
     def __init__(self, parent, size):
         super().__init__(parent, size=size)
@@ -40,7 +39,6 @@ class SkiaCPUCanvas(wx.Panel):
         self.zoom = 1.0
 
         self.svg_picture = None
-        self.img_size = None
         self.img_scale_enum = 0
         self.img_zoom = 1.0
 
@@ -158,7 +156,7 @@ class SkiaCPUCanvas(wx.Panel):
 
 class MainFrame(wx.Frame):
     def __init__(self):
-        super().__init__(None, title="Skia Wx CPU Canvas", size=(800, 600))
+        super().__init__(None, title="Wx CPU Canvas", size=(800, 600))
         panel = wx.Panel(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -166,7 +164,7 @@ class MainFrame(wx.Frame):
         open_button.Bind(wx.EVT_BUTTON, self.on_open_file)
         sizer.Add(open_button, flag=wx.ALIGN_CENTER | wx.BOTTOM, border=10)
 
-        self.canvas = SkiaCPUCanvas(panel, (800, 600))
+        self.canvas = CPUCanvas(panel, (800, 600))
         sizer.Add(self.canvas, 1, wx.EXPAND)
         panel.SetSizer(sizer)
         self.Show()
@@ -181,9 +179,7 @@ class MainFrame(wx.Frame):
             # Proceed loading the file chosen by the user
             path = fileDialog.GetPath()
             try:
-                svgstream = skia.Stream.MakeFromFile(path)
                 self.canvas.svg_picture = wx.svg.SVGimage.CreateFromFile(path)
-                self.canvas.img_size = skia.Size(self.canvas.svg_picture.width, self.canvas.svg_picture.height)
                 self.canvas.Refresh()
                 self.canvas.SetFocus()
             except Exception as e:
