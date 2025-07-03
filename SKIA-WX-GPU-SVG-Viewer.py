@@ -214,6 +214,7 @@ class MainFrame(wx.Frame):
                 self.canvas.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
                 self.canvas.svg_size = self.canvas.svg_picture.containerSize()
                 self.canvas.Refresh()
+                self.canvas.SetFocus()
             except Exception as e:
                 wx.LogError(f"Cannot open file '{path}'.\n{str(e)}")
 
