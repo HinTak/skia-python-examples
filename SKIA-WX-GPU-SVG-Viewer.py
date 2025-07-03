@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 
-# Copyright 2025, Prashant Saxena https://github.com/prashant-saxena
+# Simple SVG viewer with pan and zoom functionality, Copyright 2025 Hin-Tak Leung
 
-# SKIA-WX-GPU Example
-
-# See https://github.com/kyamagu/skia-python/issues/323
-
-# Changes:
-#     - HTL (2025-05): Remove dependency on moderngl
-#                      (and there was strictly speaking a bug
-#                       in on_size / set_viewport of
-#                       messing with moderngl's ctx)
+# Adapted from SKIA-WX-GPU Example submitted by
+#     Copyright 2025, Prashant Saxena https://github.com/prashant-saxena
+#     to https://github.com/kyamagu/skia-python/issues/323
 
 # python imports
 import math
@@ -152,9 +146,6 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.canvas.scale(self.zoom, self.zoom)
         self.canvas.translate(self.offset_x, self.offset_y)
 
-        # Create a solid paint (Blue color, but explicitly defining RGBA)
-        paint = skia.Paint(AntiAlias=True, Color=skia.Color(255, 0, 0),)
-
         if self.svg_picture:
             self.svg_picture.render(self.canvas)
 
@@ -193,7 +184,7 @@ class MainFrame(wx.Frame):
         self.Show()
 
     def on_open_file(self, event):
-        with wx.FileDialog(self, "Open Text file", wildcard="Scalable Vector Graphics (*.svg)|*.svg|All files (*.*)|*.*",
+        with wx.FileDialog(self, "Open SVG file", wildcard="Scalable Vector Graphics (*.svg)|*.svg|All files (*.*)|*.*",
                            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
@@ -204,6 +195,7 @@ class MainFrame(wx.Frame):
             try:
                 svgstream = skia.Stream.MakeFromFile(path)
                 self.canvas.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
+                self.canvas.Refresh()
             except Exception as e:
                 wx.LogError(f"Cannot open file '{path}'.\n{str(e)}")
 
