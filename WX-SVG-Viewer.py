@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 
-# Copyright 2025, Prashant Saxena, https://github.com/prashant-saxena
+# Simple SVG viewer with pan and zoom functionality, Copyright 2025 Hin-Tak Leung
 
-# SKIA-WX-CPU Example
+# Using wx.svg for SVG rendering.
 
-# See https://github.com/kyamagu/skia-python/issues/323
+# Adapted from SKIA-WX-CPU Example submitted by
+#     Copyright 2025, Prashant Saxena https://github.com/prashant-saxena
+#     to https://github.com/kyamagu/skia-python/issues/323
 
 # python imports
 import math
 import ctypes
 # pip imports
 import wx
+import wx.svg
 import skia
 
 
@@ -36,12 +39,27 @@ class SkiaCPUCanvas(wx.Panel):
         self.offset_y = 0.0
         self.zoom = 1.0
 
+        self.svg_picture = None
+        self.img_size = None
+        self.img_scale_enum = 0
+        self.img_zoom = 1.0
+
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
         self.Bind(wx.EVT_MOTION, self.on_mouse_move)
         self.Bind(wx.EVT_MOUSEWHEEL, self.on_mouse_wheel)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.Bind(wx.EVT_PAINT, self.on_paint)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+
+    def on_key_down(self, event):
+        keycode = event.GetKeyCode()
+        if ((keycode == 43) or # '+'
+            (keycode == 45)):  # '-'
+            self.img_scale_enum += (44 - keycode)
+            self.img_zoom = 1.2 ** self.img_scale_enum
+            self.Refresh()
+        event.Skip()
 
     def on_mouse_left_down(self, event):
         self.is_dragging = True
@@ -101,39 +119,19 @@ class SkiaCPUCanvas(wx.Panel):
         if w == 0 or h == 0:
             return
 
-        self.draw(w, h)
-
-        image = self.surface.makeImageSnapshot()
-        bitmap = wx.Bitmap.FromBufferRGBA(w, h, image.tobytes())
-
         dc = wx.PaintDC(self)
-        dc.DrawBitmap(bitmap, 0, 0)
+        dc.SetBackground(wx.Brush('white'))
+        dc.Clear()
 
-    def draw(self, w, h):
-        sw, h = self.GetSize()
-        if w == 0 or h == 0:
-            return
+        dcdim = min(self.Size.width, self.Size.height)
+        if (self.svg_picture):
+            imgdim = min(self.svg_picture.width, self.svg_picture.height)
+            scale = dcdim / imgdim
+            width = int(self.svg_picture.width * scale)
+            height = int(self.svg_picture.height * scale)
 
-        self.canvas.clear(skia.ColorWHITE)
-        self.canvas.save()
-
-        # Set up the translation and zoom (pan/zoom)
-        self.canvas.translate(w / 2, h / 2)
-        self.canvas.scale(self.zoom, self.zoom)
-        self.canvas.translate(self.offset_x, self.offset_y)
-
-        # Create a solid paint (Blue color, but explicitly defining RGBA)
-        paint = skia.Paint(AntiAlias=True, Color=skia.Color(255, 0, 0),)
-
-        # Draw a series of circles in a spiral pattern
-        for i in range(150):
-            angle = i * math.pi * 0.1
-            x = math.cos(angle) * i * 3
-            y = math.sin(angle) * i * 3
-            # Draw solid circles
-            self.canvas.drawCircle(x, y, 4 + (i % 4), paint)
-
-        self.canvas.restore()
+            ctx = wx.GraphicsContext.Create(dc)
+            self.svg_picture.RenderToGC(ctx, scale)
 
     def on_size(self, event):
         wx.CallAfter(self.set_size)
@@ -148,23 +146,40 @@ class SkiaCPUCanvas(wx.Panel):
         height = int(size.height * scale)
         self.size = wx.Size(width, height)
 
-        self.surface = skia.Surface.MakeRaster(skia.ImageInfo.MakeN32Premul(
-            width, height).makeColorType(skia.ColorType.kRGBA_8888_ColorType))
-        self.canvas = self.surface.getCanvas()
-
         self.Refresh()
-
 
 class MainFrame(wx.Frame):
     def __init__(self):
         super().__init__(None, title="Skia Wx CPU Canvas", size=(800, 600))
         panel = wx.Panel(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
+
+        open_button = wx.Button(panel, label='Open File')
+        open_button.Bind(wx.EVT_BUTTON, self.on_open_file)
+        sizer.Add(open_button, flag=wx.ALIGN_CENTER | wx.BOTTOM, border=10)
+
         self.canvas = SkiaCPUCanvas(panel, (800, 600))
         sizer.Add(self.canvas, 1, wx.EXPAND)
         panel.SetSizer(sizer)
         self.Show()
 
+    def on_open_file(self, event):
+        with wx.FileDialog(self, "Open SVG file", wildcard="Scalable Vector Graphics (*.svg)|*.svg|All files (*.*)|*.*",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return     # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            path = fileDialog.GetPath()
+            try:
+                svgstream = skia.Stream.MakeFromFile(path)
+                self.canvas.svg_picture = wx.svg.SVGimage.CreateFromFile(path)
+                self.canvas.img_size = skia.Size(self.canvas.svg_picture.width, self.canvas.svg_picture.height)
+                self.canvas.Refresh()
+                self.canvas.SetFocus()
+            except Exception as e:
+                wx.LogError(f"Cannot open file '{path}'.\n{str(e)}")
 
 if __name__ == "__main__":
     app = wx.App(False)

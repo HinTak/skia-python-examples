@@ -2,6 +2,8 @@
 
 # Simple SVG viewer with pan and zoom functionality, Copyright 2025 Hin-Tak Leung
 
+# Using skia.SVGDOM for SVG rendering
+
 # Adapted from SKIA-WX-GPU Example submitted by
 #     Copyright 2025, Prashant Saxena https://github.com/prashant-saxena
 #     to https://github.com/kyamagu/skia-python/issues/323
