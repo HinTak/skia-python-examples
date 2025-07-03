@@ -46,6 +46,8 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         self.offset_y = 0.0
         self.zoom = 1.0
 
+        self.svg_picture = None
+
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_left_down)
         self.Bind(wx.EVT_LEFT_UP, self.on_mouse_left_up)
         self.Bind(wx.EVT_MOTION, self.on_mouse_move)
@@ -153,13 +155,8 @@ class SkiaWxGPUCanvas(glcanvas.GLCanvas):
         # Create a solid paint (Blue color, but explicitly defining RGBA)
         paint = skia.Paint(AntiAlias=True, Color=skia.Color(255, 0, 0),)
 
-        # Draw a series of circles in a spiral pattern
-        for i in range(150):
-            angle = i * math.pi * 0.1
-            x = math.cos(angle) * i * 3
-            y = math.sin(angle) * i * 3
-            # Draw solid circles
-            self.canvas.drawCircle(x, y, 4 + (i % 4), paint)
+        if self.svg_picture:
+            self.svg_picture.render(self.canvas)
 
         self.canvas.restore()
         self.surface.flushAndSubmit()
@@ -185,11 +182,30 @@ class MainFrame(wx.Frame):
         super().__init__(None, title="Skia WxPython GPU Canvas", size=(800, 600))
         panel = wx.Panel(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
+
+        open_button = wx.Button(panel, label='Open File')
+        open_button.Bind(wx.EVT_BUTTON, self.on_open_file)
+        sizer.Add(open_button, flag=wx.ALIGN_CENTER | wx.BOTTOM, border=10)
+
         self.canvas = SkiaWxGPUCanvas(panel, (800, 600))
         sizer.Add(self.canvas, 1, wx.EXPAND)
         panel.SetSizer(sizer)
         self.Show()
 
+    def on_open_file(self, event):
+        with wx.FileDialog(self, "Open Text file", wildcard="Scalable Vector Graphics (*.svg)|*.svg|All files (*.*)|*.*",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return     # the user changed their mind
+
+            # Proceed loading the file chosen by the user
+            path = fileDialog.GetPath()
+            try:
+                svgstream = skia.Stream.MakeFromFile(path)
+                self.canvas.svg_picture = skia.SVGDOM.MakeFromStream(svgstream)
+            except Exception as e:
+                wx.LogError(f"Cannot open file '{path}'.\n{str(e)}")
 
 if __name__ == "__main__":
     app = wx.App(False)
