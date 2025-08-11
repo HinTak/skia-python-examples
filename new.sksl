@@ -1,0 +1,292 @@
+float2 inScale = float2(1.0, 1.0);
+float inTime = 0.0;
+float inGreyscaleSeed = 0.0;
+
+float4 inCellColor = float4(1.0, 1.0, 1.0, 1.0);
+float4 inEdgeColor = float4(0.0, 0.0, 0.0, 1.0);
+float inRoundness = 0.5;
+float inEquidistantEdges = 0.0;
+float inLevelsDetail = 1.0;
+float inEdgeFeather = 0.1;
+float inType = 0.0;
+float inDistortionAmount = 0.5;
+float inRotation = 0.0;
+float inSeed = 0.0;
+float inEdgeWidth = 0.1;
+float2 inOffset = float2(0.0, 0.0);
+float inStyle = 0.0;
+float inLevels = 3.0;
+float inAlpha = 1.0;
+
+float4 inLevel0Color = float4(1.0, 0.0, 0.0, 1.0);
+float4 inLevel1Color = float4(0.0, 1.0, 0.0, 1.0);
+float4 inLevel2Color = float4(0.0, 0.0, 1.0, 1.0);
+float4 inLevel3Color = float4(1.0, 1.0, 0.0, 1.0);
+float4 inLevel4Color = float4(1.0, 0.0, 1.0, 1.0);
+
+float PI = 3.141592653589;
+
+float2 random2(float2 p){
+    float3 a = fract(p.xyx * float3(123.34, 234.34, 345.65) + float3(tan(inSeed),sin(-inSeed), cos(-inSeed)));
+    a += dot(a, a + 0.45);
+    return fract(vec2(a.x * a.y, a.y * a.z));
+}
+
+float random(float2 uv){
+    return fract(sin(dot(uv, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+mat2 rotation(float r)
+{
+	float cr = cos(r);
+	float sr = sin(r);
+	return mat2(
+		cr,-sr,
+		sr,cr
+	);
+}
+
+///IQ's Polynomial-based smooth minimum.
+float smin( float a, float b, float k )
+{
+    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+    return mix( b, a, h ) - k*h*(1.0-h);
+}
+
+float3 regVoronoi(float2 uv){
+    float2 f = floor(uv);
+    float2 u = fract(uv);
+    float2 dist2, grid2;
+    float shade = 0.0;
+
+    float minDist = 10.0;
+    for( int x=-1; x<=1; x++ ){
+         for( int y=-1; y<=1; y++ )
+         {
+            float dist;
+            float2 grid = float2(float(y),float(x));
+            float2 offset = random2(f + grid);
+
+            offset = 0.5 + 0.5 * sin(inTime + 6.2831 * offset * inDistortionAmount) * inDistortionAmount;
+
+            float2 r = grid + offset - u;
+            dist = length(r);
+
+            if(dist<minDist)
+            {
+                minDist = dist;
+                dist2 = r;
+                grid2 = grid;
+                shade = random((f + grid) + sin(inGreyscaleSeed));
+            }
+         }
+    }
+
+
+    ///Calculate lines and Equidistance mode
+    float lineDist = 20.0;
+    float EELineDist = 20.0;
+    float lineMDist = 20.0;
+    for( int j=-3; j<=3; j++ ){
+        for( int i=-3; i<=3; i++ ){
+            float2 grid = grid2 + float2(float(i),float(j));
+            float2 offset = random2(f + grid);
+
+            offset = 0.5 + 0.5 * sin(inTime + 6.2831 * offset * inDistortionAmount) * inDistortionAmount;
+
+            float2 r = grid + offset - u;
+
+            if(dot(dist2-r,dist2-r)>0.00001 ){
+                EELineDist = min(EELineDist, dot(0.5 * (dist2 + r), normalize(r - dist2)));
+                lineDist =  dot(0.5 * (dist2 + r), normalize(r - dist2));
+                lineMDist = smin(lineMDist, lineDist, inRoundness);
+            }
+        }
+    }
+
+
+    lineMDist = max(lineMDist, 0.00001);
+    minDist = max(minDist, 0.0);
+
+    if(inStyle == 3){
+        minDist = abs(dist2.x) + abs(dist2.y);
+    } else if(inEquidistantEdges == 1){
+        minDist = EELineDist;
+    }
+
+    return float3(minDist, lineMDist, shade);
+}
+
+float4 calcVoronoi(float2 uv, float x, float y, float i, float2 lastId, float minDist, in float oldShade, out float newShade, in float oldLevel, out float newLevel){
+    //returning float4 as float4(minDist, float2(lastId), hasChild);
+    //shade and level as pointer
+
+    float percentage = inLevelsDetail ;
+    float2 f = fract(uv);
+    float2 u = floor(uv);
+    float2 r = float2(0.0);
+    float2 id = float2(0.0);
+    float hasChild = 0.0;
+    if(i == 0.0){
+        id = float2(x,y);
+        percentage = percentage / 3.0;
+    } else{
+        percentage = (percentage / pow(i+2.0,2));
+        id = lastId + float2(x,y) / pow(2.0,i);
+    }
+    float2 offset = random2(id + u);
+    offset = 0.5 + 0.5 * sin(inTime + 6.2831 * offset * inDistortionAmount) * inDistortionAmount;
+    if(i == 0.0){
+        r = id + offset - f;
+    } else{
+        r = id + (offset / pow(2.0,i)) - f;
+    }
+    float d;
+    if(inStyle == 3){
+        d  = abs(r.x) + abs(r.y);
+    } else{
+        d  =  length(r);
+    }
+    float rand = random(id + u  + sin(inSeed)) + 0.001;
+    if(i >= inLevels){
+        rand = 0.0;
+    }
+    if(rand <= 1.0 - percentage ){
+        if(d < minDist){
+
+            minDist = d;
+            newLevel = i;
+            newShade = random((id + u) + sin(inGreyscaleSeed));
+
+        } else{
+            newShade = oldShade;
+            newLevel = oldLevel;
+        }
+    } else{
+        newShade = oldShade;
+        newLevel = oldLevel;
+        hasChild = 1.0;
+    }
+    return float4(minDist, float2(id), hasChild);
+}
+
+float3 hierVoronoi(float2 uv){
+
+    float minDist = 10.0;
+    float shade = 0.0;
+    float oldShade = 0.0;
+    float2 id = float2(0.0);
+    float level = 0.;
+    float oldLevel = 0.;
+    float4 voronoiData = float4(10.0, 0.,0.,0.);
+    for(float y=-1.; y<=1.; y++){
+        for(float x=-1.; x<=1.; x++){
+            voronoiData = calcVoronoi(uv, x, y, 0.0, float2(0.0), voronoiData.x, oldShade, shade, oldLevel, level);
+            oldShade = shade;
+            oldLevel = level;
+            if(voronoiData.a == 1.0){
+                float2 id0 = voronoiData.yz;
+                for(float l=0.; l<=1.; l++){
+                    for(float k=0.; k<=1.; k++){
+                        voronoiData = calcVoronoi(uv, k, l, 1.0, id0, voronoiData.x, oldShade,shade, oldLevel, level);
+                        oldShade = shade;
+                        oldLevel = level;
+                        if(voronoiData.a == 1.0){
+                            float2 id1 = voronoiData.yz;
+                            for(float q=0.; q<=1.; q++){
+                                for(float w=0.; w<=1.; w++){
+                                    voronoiData = calcVoronoi(uv, w, q, 2.0, id1, voronoiData.x, oldShade,shade, oldLevel, level);
+                                    oldShade = shade;
+                                    oldLevel = level;
+                                    if(voronoiData.a == 1.0){
+                                        float2 id2 = voronoiData.yz;
+                                        for(float a=0.; a<=1.; a++){
+                                            for(float b=0.; b<=1.; b++){
+                                                voronoiData = calcVoronoi(uv, b, a, 3.0, id2, voronoiData.x, oldShade,shade, oldLevel, level);
+                                                oldShade = shade;
+                                                oldLevel = level;
+                                                if(voronoiData.a == 1.0){
+                                                    float2 id3 = voronoiData.yz;
+                                                    for(float c=0.; c<=1.; c++){
+                                                        for(float d=0.; d<=1.; d++){
+                                                            voronoiData = calcVoronoi(uv, c, d, 4.0, id3, voronoiData.x, oldShade,shade, oldLevel, level);
+                                                            oldShade = shade;
+                                                            oldLevel = level;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return float3(voronoiData.x, level, shade);
+
+}
+
+
+
+half4 main(float2 fragCoord){
+
+    half4 edgeColor = half4(inEdgeColor.rgb/255.0 * (inEdgeColor.a/255.0), inEdgeColor.a/255.0);
+    half4 cellColor = half4(inCellColor.rgb/255.0 * (inCellColor.a/255.0), inCellColor.a/255.0);
+
+
+    half4 level0Color = half4(inLevel0Color.rgb/255.0 * (inLevel0Color.a/255.0), inLevel0Color.a/255.0);
+    half4 level1Color = half4(inLevel1Color.rgb/255.0 * (inLevel1Color.a/255.0), inLevel1Color.a/255.0);
+    half4 level2Color = half4(inLevel2Color.rgb/255.0 * (inLevel2Color.a/255.0), inLevel2Color.a/255.0);
+    half4 level3Color = half4(inLevel3Color.rgb/255.0 * (inLevel3Color.a/255.0), inLevel3Color.a/255.0);
+    half4 level4Color = half4(inLevel4Color.rgb/255.0 * (inLevel4Color.a/255.0), inLevel4Color.a/255.0);
+
+    float4 col = float4(1.0);
+    float2 uv = fragCoord.xy * rotation(-inRotation);
+    uv -= inOffset * rotation(-inRotation);
+    uv /= inScale;
+
+    if(inType == 0){
+        col.rgb = regVoronoi(uv);
+
+        ///Flat
+        if(inStyle == 0){
+
+            col = mix(edgeColor, cellColor,  smoothstep(inEdgeWidth, inEdgeWidth + inEdgeFeather , col.y));
+        }
+        else if(inStyle == 1){
+            col.z = max(col.z, 0.02);
+            col = mix(edgeColor, half4(float3(col.z), 1.0),  smoothstep(inEdgeWidth, inEdgeWidth + inEdgeFeather , col.y));
+        }
+        ///Other styles
+        else{
+             col = mix(edgeColor, half4(float3(col.x), 1.0), smoothstep(inEdgeWidth, inEdgeWidth + inEdgeFeather, col.y));
+        }
+    }
+    if(inType == 1){
+        col.rgb = hierVoronoi(uv);
+
+    ///Flat
+    if(inStyle == 0){
+        cellColor = mix(level0Color, col, col.y);
+        cellColor = mix(cellColor, level1Color, col.y);
+        cellColor = mix(cellColor, level2Color, max(col.y - 1.0,0.0));
+        cellColor = mix(cellColor, level3Color, max(col.y - 2.0,0.0));
+        col = mix(cellColor, level4Color, max(col.y - 3.0,0.0));
+
+      }
+    else if(inStyle == 1){
+        col = half4(float3(col.z), 1.0);
+    }
+    ///Euclidean and Manhattan
+    else{
+       col = half4(float3(col.x),1.0);
+        }
+    }
+
+    return half4(col * inAlpha);
+}
